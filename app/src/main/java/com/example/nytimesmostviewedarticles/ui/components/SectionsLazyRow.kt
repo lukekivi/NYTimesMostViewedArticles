@@ -19,15 +19,16 @@ import com.example.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesT
 
 @Composable
 fun SectionsLazyRow(
-    sectionsList: Array<String>,
+    sectionNames: Array<String>,
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
         modifier = modifier
+            .padding(start = 10.dp, end = 10.dp)
             .fillMaxWidth()
     ){
-        itemsIndexed(sectionsList) { index, section ->
+        itemsIndexed(sectionNames) { index, section ->
             Column(
                 modifier = modifier
                     .padding(start = 10.dp, end = 10.dp)
@@ -48,7 +49,7 @@ fun SectionsLazyRow(
 fun SectionsLazyRowPreview() {
     NYTimesMostViewedArticlesTheme {
         SectionsLazyRow(
-            sectionsList = stringArrayResource(id = R.array.section_names),
+            sectionNames = stringArrayResource(id = R.array.section_names),
             onSelected = {}
         )
     }

@@ -3,13 +3,13 @@ package com.example.nytimesmostviewedarticles.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -23,6 +23,7 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.nytimesmostviewedarticles.R
 import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.example.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.example.nytimesmostviewedarticles.datatypes.MediaMetaData
 import com.example.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
 
@@ -30,6 +31,7 @@ import com.example.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesT
 @Composable
 fun ArticleCard(
     articleData: ArticleDataForUI,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -38,6 +40,7 @@ fun ArticleCard(
         modifier = modifier
             .size(width = 750.dp, height = 225.dp)
             .padding(start = 20.dp, end = 20.dp)
+            .clickable{ onClick() }
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -161,13 +164,12 @@ fun ArticleCardPreview() {
                 title = "First Cases of COVID-19 Have Reached the Moon.",
                 abstract = "",
                 descriptionFacets = listOf("COVID-19; Omicron"),
-                media = MediaMetaData(
+                media = MediaDataForUI(
                     url = "https://static01.nyt.com/images/2022/01/07/us/07virus-briefing-diabetes-misc/07virus-briefing-diabetes-misc-mediumThreeByTwo210.jpg",
-                        format = "",
-                        height = 0,
-                        width = 0
+                    caption = ""
                 )
-            )
+            ),
+            {}
         )
     }
 }
