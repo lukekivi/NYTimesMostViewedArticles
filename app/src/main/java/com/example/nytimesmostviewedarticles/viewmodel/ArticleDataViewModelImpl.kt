@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class ArticleDataState {
-    object NoRequest: ArticleDataState()
     object Loading: ArticleDataState()
     class Success(val data: List<ArticleDataForUI>): ArticleDataState()
     class Error(val message: String): ArticleDataState()
@@ -32,7 +31,7 @@ class ArticleDataViewModelImpl @Inject constructor(
     override val sectionNames: Array<String>
         get() = context.resources.getStringArray(R.array.section_names)
 
-    private val _articleDataState: MutableStateFlow<ArticleDataState> = MutableStateFlow(ArticleDataState.NoRequest)
+    private val _articleDataState: MutableStateFlow<ArticleDataState> = MutableStateFlow(ArticleDataState.Loading)
     override val articleDataState: StateFlow<ArticleDataState> = _articleDataState
 
     init {
