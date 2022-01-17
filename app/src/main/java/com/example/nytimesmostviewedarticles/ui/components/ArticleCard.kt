@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.example.nytimesmostviewedarticles.R
 import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.example.nytimesmostviewedarticles.datatypes.MediaMetaData
@@ -88,7 +89,14 @@ fun ArticleCard(
 
         }
         Image(
-            painter = rememberImagePainter(articleData.media.url),
+            painter = rememberImagePainter(
+                data = articleData.media.url,
+                builder = {
+                    crossfade(true)
+                    placeholder(R.drawable.loading_animation)
+                    transformations(CircleCropTransformation())
+                }
+            ),
             contentDescription = null,
             modifier = modifier
                 .size(width = 252.dp, height = 168.dp)
