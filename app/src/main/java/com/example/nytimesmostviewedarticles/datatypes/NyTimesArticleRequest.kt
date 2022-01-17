@@ -2,7 +2,14 @@ package com.example.nytimesmostviewedarticles.datatypes
 
 import com.squareup.moshi.Json
 
-data class ArticleData(
+data class NyTimesArticleRequest(
+    val status: String,
+    val copyright: String,
+    val num_results: Int,
+    val results: List<ViewedArticle>
+)
+
+data class ViewedArticle(
     val uri: String,
     val url: String,
     val id: Int,
@@ -41,17 +48,4 @@ data class MediaMetaData(
     val format: String,
     val height: Int,
     val width: Int
-)
-
-data class ArticleDataForUI(
-    val url: String,
-    val publishedDate: String,
-    val section: String,
-    val subsection: String,
-    val byline: String,
-    val type: String,
-    val title: String,
-    val abstract: String,
-    val descriptionFacets: List<String>,
-    val media: MediaMetaData
 )
