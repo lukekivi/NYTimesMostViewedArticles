@@ -13,7 +13,7 @@ data class ArticleDataForUI(
     val media: MediaDataForUI
 )
 
-data class MediaDataForUI(
-    val url: String,
-    val caption: String
-)
+sealed class MediaDataForUI {
+    object Unavailable: MediaDataForUI()
+    data class Available(val url: String, val caption: String): MediaDataForUI()
+}

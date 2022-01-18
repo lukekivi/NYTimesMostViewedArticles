@@ -3,49 +3,49 @@ package com.example.nytimesmostviewedarticles.datatypes
 import com.squareup.moshi.Json
 
 data class NyTimesArticleRequest(
-    val status: String,
-    val copyright: String,
-    val num_results: Int,
-    val results: List<ViewedArticle>
+    @Json(name = "status") val status: String,
+    @Json(name = "copyright") val copyright: String,
+    @Json(name = "num_results") val num_results: Int,
+    @Json(name = "results") val results: List<ViewedArticle>
 )
 
 data class ViewedArticle(
-    val uri: String,
-    val url: String,
-    val id: Int,
-    val asset_id: Int,
-    val source: String,
-    val published_date: String,
-    val updated: String,
-    val section: String,
-    val subsection: String,
-    val nytdsection: String,
-    val adx_keywords: String,
-    val column: String?,
-    val byline: String,
-    val type: String,
-    val title: String,
-    val abstract: String,
-    val des_facet: List<String>,
-    val org_facet: List<String>,
-    val per_facet: List<String>,
-    val geo_facet: List<String>,
-    val media: List<MediaData>,
-    val eta_id: Int
+    @Json(name = "uri") val uri: String,
+    @Json(name = "url") val url: String,
+    @Json(name = "id") val id: Long,
+    @Json(name = "asset_id") val asset_id: Long,
+    @Json(name = "source") val source: String,
+    @Json(name = "published_date") val published_date: String,
+    @Json(name = "updated") val updated: String,
+    @Json(name = "section") val section: String,
+    @Json(name = "subsection") val subsection: String,
+    @Json(name = "nytdsection") val nytdsection: String,
+    @Json(name = "adx_keywords") val adx_keywords: String,
+    @Json(name = "column") val column: String?,
+    @Json(name = "byline") val byline: String,
+    @Json(name = "type") val type: String,
+    @Json(name = "title") val title: String,
+    @Json(name = "abstract") val abstract: String,
+    @Json(name = "des_facet") val des_facet: List<String>,
+    @Json(name = "org_facet") val org_facet: List<String>,
+    @Json(name = "per_facet") val per_facet: List<String>,
+    @Json(name = "geo_facet") val geo_facet: List<String>,
+    @Json(name = "media") val media: List<MediaData>,
+    @Json(name = "eta_id") val eta_id: Int
 )
 
 data class MediaData(
-    val type: String,
-    val subtype: String,
-    val caption: String,
-    val copyright: String,
-    val approved_for_syndication: Int,
-    @Json(name = "media-metadata") val media_metadata: List<MediaMetaData>
+    @Json(name = "type") val type: String,
+    @Json(name = "subtype") val subtype: String,
+    @Json(name = "caption") val caption: String,
+    @Json(name = "copyright") val copyright: String,
+    @Json(name = "approved_for_syndication") val approved_for_syndication: Int,
+    @Json(name = "media-metadata") val mediaMetadata: List<MediaMetaData>
 )
 
 data class MediaMetaData(
-    val url: String,
-    val format: String,
-    val height: Int,
-    val width: Int
+    @Json(name = "url") val url: String,
+    @Json(name = "format") val format: String,
+    @Json(name = "height") val height: Int,
+    @Json(name = "width") val width: Int
 )

@@ -25,7 +25,7 @@ fun SectionsLazyRow(
 ) {
     LazyRow(
         modifier = modifier
-            .padding(start = 10.dp, end = 10.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxWidth()
     ){
         itemsIndexed(sectionNames) { index, section ->
