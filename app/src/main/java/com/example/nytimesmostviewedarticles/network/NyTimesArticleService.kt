@@ -17,9 +17,9 @@ import javax.inject.Singleton
 
 @Singleton
 class NyTimesArticleService: ArticleService {
+    private val mediaTypeOfConcern = "image" // We only want "image" media from the API
+
     private val baseUrl = "https://api.nytimes.com/svc/mostpopular/v2/viewed/"
-    private val mediaTypeOfConcern = "image"    // we are only concerned with images
-    private val imageHeightOfConcern = 293      // matches the largest image size available from NY Times API
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -51,9 +51,13 @@ class NyTimesArticleService: ArticleService {
                         val media = articleData.media
                             .first { it.type == mediaTypeOfConcern }
 
+                        /**
+                         * Data is organized from smallest to largest.
+                         * The largest being a reasonable size. (440 x 293)
+                         */
                         MediaDataForUI.Available(
                             url = media.mediaMetadata
-                                .first { it.height ==  imageHeightOfConcern}
+                                .last()
                                 .url,
                             caption = media.caption
                         )
