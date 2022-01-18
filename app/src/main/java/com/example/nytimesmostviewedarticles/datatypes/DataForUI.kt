@@ -12,14 +12,11 @@ data class ArticleDataForUI(
     val abstract: String,
     val descriptionFacets: List<String>,
     val geographyFacets: List<String>,
-    val media: MediaDataForUI
+    val media: MediaDataForUI?
 )
 
-sealed class MediaDataForUI {
-    object Unavailable: MediaDataForUI()
-    data class Available(
-        val url: String,
-        val caption: String,
-        val width: Int
-        ): MediaDataForUI()
-}
+data class MediaDataForUI(
+    val url: String,
+    val caption: String,
+    val width: Int
+)

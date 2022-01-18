@@ -57,13 +57,13 @@ class NyTimesArticleService: ArticleService {
                          */
                         val mediaMetaData = media.mediaMetadata.last()
 
-                        MediaDataForUI.Available(
+                        MediaDataForUI(
                             url = mediaMetaData.url,
                             caption = media.caption,
                             width = mediaMetaData.width
                         )
                     } catch (e: NoSuchElementException) {
-                        MediaDataForUI.Unavailable
+                        null
                     }
 
                     ArticleDataForUI(

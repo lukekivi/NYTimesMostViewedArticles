@@ -85,15 +85,14 @@ fun ArticleCard(
 
         }
         Image(
-            painter = when (articleData.media) {
-                is MediaDataForUI.Available -> rememberImagePainter(
+            painter = articleData.media?.let {
+                rememberImagePainter(
                     data = articleData.media.url,
                     builder = {
                         placeholder(R.drawable.loading_animation)
                         transformations(CircleCropTransformation())
                     })
-                is MediaDataForUI.Unavailable -> painterResource(id = R.drawable.ic_the_new_york_times_alt)
-            },
+            } ?: painterResource(id = R.drawable.ic_the_new_york_times_alt),
             contentDescription = null,
             modifier = modifier
                 .size(width = 252.dp, height = 168.dp)
@@ -121,7 +120,7 @@ fun ArticleCardPreview() {
                 abstract = "",
                 descriptionFacets = listOf("COVID-19; Omicron"),
                 geographyFacets = listOf(""),
-                media = MediaDataForUI.Available(
+                media = MediaDataForUI(
                     url = "https://static01.nyt.com/images/2022/01/07/us/07virus-briefing-diabetes-misc/07virus-briefing-diabetes-misc-mediumThreeByTwo210.jpg",
                     caption = "",
                     0
