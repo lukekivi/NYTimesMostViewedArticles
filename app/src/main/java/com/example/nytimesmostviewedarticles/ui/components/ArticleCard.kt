@@ -56,7 +56,7 @@ fun ArticleCard(
                 text = articleData.title,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 18.sp,
                 modifier = Modifier
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
@@ -65,32 +65,30 @@ fun ArticleCard(
                 text = stringResource(R.string.article_card_published_line) + articleData.publishedDate,
                 fontFamily = FontFamily.Serif,
                 fontStyle = FontStyle.Italic,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 modifier = Modifier
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
             )
             Row(
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier
+                    .fillMaxWidth()
             ) {
                 TextCircle(
                     text = articleData.section,
-                    borderWidth = 2.0,
-                    colorResourceId = R.color.black,
-                    modifier = modifier.padding(end = 10.dp)
+                    modifier = modifier
+                        .padding(end = 10.dp)
                 )
                 TextCircle(
                     text = articleData.subsection,
-                    borderWidth = 1.5,
-                    colorResourceId = R.color.black_half,
-                    modifier = modifier.padding(start = 10.dp, end = 10.dp)
+                    modifier = modifier
+                        .padding(start = 10.dp, end = 10.dp)
                 )
                 if (articleData.descriptionFacets.isNotEmpty()) {
                     TextCircle(
                         text = articleData.descriptionFacets.first(),
-                        borderWidth = 1.0,
-                        colorResourceId = R.color.black_third,
-                        modifier = modifier.padding(start = 10.dp, end = 10.dp)
+                        modifier = modifier
+                            .padding(start = 10.dp, end = 10.dp)
                     )
                 }
             }
@@ -117,8 +115,6 @@ fun ArticleCard(
 @Composable
 fun TextCircle(
     text: String,
-    borderWidth: Double,
-    colorResourceId: Int,
     modifier: Modifier = Modifier
 ) {
     if (text.isNotBlank()) {
@@ -127,8 +123,8 @@ fun TextCircle(
             modifier = modifier
                 .wrapContentSize()
                 .border(
-                    width = borderWidth.dp,
-                    color = colorResource(id = colorResourceId),
+                    width = .5.dp,
+                    color = colorResource(id = R.color.black),
                     shape = RoundedCornerShape(15.dp)
                 )
                 .background(color = Color.White)
@@ -137,8 +133,8 @@ fun TextCircle(
                 text = text,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.Serif,
-                fontSize = 18.sp,
-                modifier = modifier.padding(start = 10.dp, end = 10.dp),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -152,8 +148,6 @@ fun TextCirclePreview() {
     NYTimesMostViewedArticlesTheme {
         TextCircle(
             text = "Section",
-            borderWidth = 2.0,
-            colorResourceId = R.color.black
         )
     }
 }

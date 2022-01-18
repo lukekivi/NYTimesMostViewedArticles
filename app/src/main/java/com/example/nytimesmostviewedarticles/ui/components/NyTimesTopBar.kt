@@ -29,7 +29,7 @@ fun NyTimesTopBar(
                 text = stringResource(R.string.app_bar_title),
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
+                fontSize = 22.sp,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.black),
                 modifier = modifier.fillMaxWidth()
