@@ -1,5 +1,6 @@
 package com.example.nytimesmostviewedarticles.ui.components
 
+import android.media.FaceDetector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,7 +44,6 @@ fun ArticleCard(
         modifier = modifier
             .size(width = 750.dp, height = 225.dp)
             .padding(start = 20.dp, end = 20.dp)
-            .clickable { onClick() }
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -60,6 +60,7 @@ fun ArticleCard(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
+                    .clickable { onClick() }
             )
             Text(
                 text = stringResource(R.string.article_card_published_line) + articleData.publishedDate,
@@ -74,23 +75,12 @@ fun ArticleCard(
                 modifier = modifier
                     .fillMaxWidth()
             ) {
-                TextCircle(
-                    text = articleData.section,
-                    modifier = modifier
-                        .padding(end = 10.dp)
+                FacetsLazyRow(
+                    facets = listOf(
+                        articleData.section,
+                        articleData.subsection
+                    ) + articleData.descriptionFacets
                 )
-                TextCircle(
-                    text = articleData.subsection,
-                    modifier = modifier
-                        .padding(start = 10.dp, end = 10.dp)
-                )
-                if (articleData.descriptionFacets.isNotEmpty()) {
-                    TextCircle(
-                        text = articleData.descriptionFacets.first(),
-                        modifier = modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                    )
-                }
             }
 
         }
@@ -108,46 +98,7 @@ fun ArticleCard(
             modifier = modifier
                 .size(width = 252.dp, height = 168.dp)
                 .weight(1f)
-        )
-    }
-}
-
-@Composable
-fun TextCircle(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    if (text.isNotBlank()) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = modifier
-                .wrapContentSize()
-                .border(
-                    width = .5.dp,
-                    color = colorResource(id = R.color.black),
-                    shape = RoundedCornerShape(15.dp)
-                )
-                .background(color = Color.White)
-        ) {
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily.Serif,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TextCirclePreview() {
-    NYTimesMostViewedArticlesTheme {
-        TextCircle(
-            text = "Section",
+                .clickable { onClick() }
         )
     }
 }
@@ -161,6 +112,7 @@ fun ArticleCardPreview() {
             articleData = ArticleDataForUI(
                 url = "",
                 publishedDate = "March, 14 2022",
+                updated = "",
                 section = "World",
                 subsection = "Space",
                 byline = "",
@@ -168,6 +120,7 @@ fun ArticleCardPreview() {
                 title = "First Cases of COVID-19 Have Reached the Moon.",
                 abstract = "",
                 descriptionFacets = listOf("COVID-19; Omicron"),
+                geographyFacets = listOf(""),
                 media = MediaDataForUI.Available(
                     url = "https://static01.nyt.com/images/2022/01/07/us/07virus-briefing-diabetes-misc/07virus-briefing-diabetes-misc-mediumThreeByTwo210.jpg",
                     caption = ""
