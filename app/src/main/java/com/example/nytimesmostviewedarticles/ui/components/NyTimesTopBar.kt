@@ -19,8 +19,6 @@ import com.example.nytimesmostviewedarticles.R
 @Composable
 fun NyTimesTopBar(
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
-    onClickIcon: (() -> Unit) = {},
     navigationIcon: @Composable (() -> Unit)? = null
 ) {
     TopAppBar(
@@ -36,20 +34,6 @@ fun NyTimesTopBar(
             )
         },
         navigationIcon = navigationIcon,
-        backgroundColor = colorResource(id = R.color.white),
-        actions =
-        {
-            if (icon != null) {
-                IconButton(
-                    onClick = { onClickIcon() }
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        tint = colorResource(id = R.color.white),
-                        contentDescription = null,
-                    )
-                }
-            }
-        }
+        backgroundColor = colorResource(id = R.color.white)
     )
 }
