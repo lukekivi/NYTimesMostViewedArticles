@@ -123,7 +123,8 @@ fun ArticleCardPreview() {
                 geographyFacets = listOf(""),
                 media = MediaDataForUI.Available(
                     url = "https://static01.nyt.com/images/2022/01/07/us/07virus-briefing-diabetes-misc/07virus-briefing-diabetes-misc-mediumThreeByTwo210.jpg",
-                    caption = ""
+                    caption = "",
+                    0
                 )
             ),
             {}

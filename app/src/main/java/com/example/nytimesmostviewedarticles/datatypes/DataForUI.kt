@@ -17,5 +17,9 @@ data class ArticleDataForUI(
 
 sealed class MediaDataForUI {
     object Unavailable: MediaDataForUI()
-    data class Available(val url: String, val caption: String): MediaDataForUI()
+    data class Available(
+        val url: String,
+        val caption: String,
+        val width: Int
+        ): MediaDataForUI()
 }

@@ -55,11 +55,12 @@ class NyTimesArticleService: ArticleService {
                          * Data is organized from smallest to largest.
                          * The largest being a reasonable size. (440 x 293)
                          */
+                        val mediaMetaData = media.mediaMetadata.last()
+
                         MediaDataForUI.Available(
-                            url = media.mediaMetadata
-                                .last()
-                                .url,
-                            caption = media.caption
+                            url = mediaMetaData.url,
+                            caption = media.caption,
+                            width = mediaMetaData.width
                         )
                     } catch (e: NoSuchElementException) {
                         MediaDataForUI.Unavailable
