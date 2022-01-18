@@ -64,6 +64,7 @@ class NyTimesArticleService: ArticleService {
                     ArticleDataForUI(
                         url = articleData.url,
                         publishedDate = articleData.published_date,
+                        updated = articleData.updated,
                         section = articleData.section,
                         subsection = articleData.subsection,
                         byline = articleData.byline,
@@ -71,6 +72,7 @@ class NyTimesArticleService: ArticleService {
                         title = articleData.title,
                         abstract = articleData.abstract,
                         descriptionFacets = articleData.des_facet,
+                        geographyFacets = articleData.geo_facet,
                         media = mediaDataForUI
                     )
                 }.let {
