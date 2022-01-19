@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,6 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun MainScreen(
     articleDataState: StateFlow<ArticleDataState>,
-    sectionNames: Array<String>,
     onNavClick: (ArticleDataForUI) -> Unit
 ) {
     val articleData by articleDataState.collectAsState(ArticleDataState.Loading)
@@ -46,7 +46,7 @@ fun MainScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             SectionsLazyRow(
-                sectionNames = sectionNames,
+                sectionNames = stringArrayResource(id = R.array.section_names),
                 onSelected = {}
             )
             Divider(

@@ -3,11 +3,10 @@ package com.nytimesmostviewedarticles.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nytimesmostviewedarticles.Constants
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.nytimesmostviewedarticles.datatypes.NetworkResponse
-import com.nytimesmostviewedarticles.network.ArticleService
+import com.nytimesmostviewedarticles.network.ArticleApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +24,8 @@ sealed class ArticleDataState {
 
 @HiltViewModel
 class ArticleDataViewModelImpl @Inject constructor(
-    private val nyTimesArticleService: ArticleService,
-    @ApplicationContext private val  context: Context
-): ViewModel(), ArticleDataViewModel {
-    override val sectionNames: Array<String>
-        get() = context.resources.getStringArray(R.array.section_names)
-
+    private val nyTimesArticleApi: ArticleApi
+    ): ViewModel(), ArticleDataViewModel {
     override lateinit var selectedArticle: ArticleDataForUI
 
     private val _articleDataState: MutableStateFlow<ArticleDataState> = MutableStateFlow(ArticleDataState.Loading)
@@ -44,7 +39,7 @@ class ArticleDataViewModelImpl @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _articleDataState.emit(ArticleDataState.Loading)
 
-            nyTimesArticleService.getArticleDataForUi(Constants.DEFAULT_PERIOD_ENUM)
+            nyTimesArticleApi.getArticleDataForUi()
                 .let { response ->
                     when (response) {
                         is NetworkResponse.Success -> _articleDataState.emit(

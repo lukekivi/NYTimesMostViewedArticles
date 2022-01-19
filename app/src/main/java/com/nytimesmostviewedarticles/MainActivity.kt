@@ -6,20 +6,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import com.google.accompanist.navigation.animation.composable
 import coil.annotation.ExperimentalCoilApi
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.nytimesmostviewedarticles.ui.screens.DetailScreen
 import com.nytimesmostviewedarticles.ui.screens.MainScreen
 import com.nytimesmostviewedarticles.viewmodel.ArticleDataViewModelImpl
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalCoilApi
@@ -46,9 +44,7 @@ class MainActivity : ComponentActivity() {
             composable(route = Constants.MAIN_SCREEN) {
                 MainScreen(
                     articleDataState = articleDataViewModel.articleDataState,
-                    sectionNames = articleDataViewModel.sectionNames,
                     onNavClick = { articleData ->
-                        Log.d("Navigation", "onNavClick")
                         articleDataViewModel.selectedArticle = articleData
                         navController.navigate(Constants.DETAILS_SCREEN)
                     }
@@ -60,7 +56,6 @@ class MainActivity : ComponentActivity() {
                 enterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) },
                 exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }) }
             ) {
-                Log.d("Navigation", "Composable launched")
                 DetailScreen(
                     appData = articleDataViewModel.selectedArticle,
                     onNavClick = { navController.popBackStack() }
