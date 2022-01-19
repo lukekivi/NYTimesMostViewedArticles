@@ -73,7 +73,6 @@ class NyTimesArticleService: ArticleService {
                         section = articleData.section,
                         subsection = articleData.subsection,
                         byline = articleData.byline,
-                        type = articleData.type,
                         title = articleData.title,
                         abstract = articleData.abstract,
                         descriptionFacets = listOf(articleData.section, articleData.subsection) + articleData.des_facet,

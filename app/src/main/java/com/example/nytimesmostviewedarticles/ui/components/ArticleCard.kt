@@ -102,7 +102,6 @@ fun ArticleCardPreview() {
                 section = "World",
                 subsection = "Space",
                 byline = "",
-                type = "",
                 title = "First Cases of COVID-19 Have Reached the Moon.",
                 abstract = "",
                 descriptionFacets = listOf("COVID-19; Omicron"),

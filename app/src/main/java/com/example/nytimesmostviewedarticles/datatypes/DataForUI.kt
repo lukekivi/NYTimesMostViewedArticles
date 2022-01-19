@@ -7,7 +7,6 @@ data class ArticleDataForUI(
     val section: String,
     val subsection: String,
     val byline: String,
-    val type: String,
     val title: String,
     val abstract: String,
     val descriptionFacets: List<String>,
