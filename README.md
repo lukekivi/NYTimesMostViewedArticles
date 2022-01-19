@@ -6,12 +6,16 @@ This app displays details about NY Times most viewed articles from the past few 
 - Install onto your device
 - Run.
 
-## API
-The time period options offered by the API are:
-- 1 day
-- 7 days
-- 30 days
-
+## New York Times Most Viewed Articles API
+The time period options offered by the [API][1] are:
+|       App Enum Name        | Interval | Used |
+| -------------------------- | -------- | ---- |
+| NyTimesArticlePeriod.DAY   | 1 day    | No   |
+| NyTimesArticlePeriod.WEEK  | 7 days   | Yes  |
+| NyTimesArticlePeriod.MONTH | 30 days  | No   |
+Will consider adding a period selector in the future.
+\
+\
 The queried article data includes media. This app is only concerned with exposing images and there are three sizes:
 |         Name        | Width | Height | Used |
 | ------------------- | ----- | ------ | ---- |
@@ -33,7 +37,6 @@ The queried article data includes media. This app is only concerned with exposin
 ## Links
 - [Git](https://github.com/lukekivi/NYTimesMostViewedArticles)
 - [Figma project](https://www.figma.com/file/Wuke3S3snr9L3hcRVRQID0/NYTimesMostViewedArticles?node-id=0%3A1)
-- [NY Times API](https://developer.nytimes.com/docs/most-popular-product/1/routes/viewed/%7Bperiod%7D.json/get)
+- [NY Times API][1]
 
-
- 
+[1]: (https://developer.nytimes.com/docs/most-popular-product/1/routes/viewed/%7Bperiod%7D.json/get)

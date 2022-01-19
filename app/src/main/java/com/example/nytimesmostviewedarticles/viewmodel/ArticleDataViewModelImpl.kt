@@ -3,11 +3,11 @@ package com.example.nytimesmostviewedarticles.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nytimesmostviewedarticles.Constants
 import com.example.nytimesmostviewedarticles.R
 import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.example.nytimesmostviewedarticles.datatypes.NetworkResponse
 import com.example.nytimesmostviewedarticles.network.ArticleService
-import com.example.nytimesmostviewedarticles.network.NyTimesArticlePeriod
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class ArticleDataViewModelImpl @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _articleDataState.emit(ArticleDataState.Loading)
 
-            nyTimesArticleService.getArticleDataForUi(NyTimesArticlePeriod.WEEK)
+            nyTimesArticleService.getArticleDataForUi(Constants.DEFAULT_PERIOD_ENUM)
                 .let { response ->
                     when (response) {
                         is NetworkResponse.Success -> _articleDataState.emit(
