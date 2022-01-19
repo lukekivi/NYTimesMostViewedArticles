@@ -31,6 +31,8 @@ class ArticleDataViewModelImpl @Inject constructor(
     override val sectionNames: Array<String>
         get() = context.resources.getStringArray(R.array.section_names)
 
+    override lateinit var selectedArticle: ArticleDataForUI
+
     private val _articleDataState: MutableStateFlow<ArticleDataState> = MutableStateFlow(ArticleDataState.Loading)
     override val articleDataState: StateFlow<ArticleDataState> = _articleDataState
 

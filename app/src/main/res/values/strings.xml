@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">NY Times Most Viewed Articles</string>
     <string name="article_card_published_line">Published \u0020</string>
-    <string name="app_bar_title">NY Times Most Viewed Articles</string>
+    <string name="app_bar_title">NY Times Most Viewed</string>
     <string name="no_active_article_data_request">No Active Request.</string>
+    <string name="detail_screen_byline">Written by \u0020</string>
+    <string name="detail_screen_published_by">Published \u0020</string>
+    <string name="detail_screen_updated">  \u0020updated \u0020</string>
+    <string name="detail_screen_read_more">Read More</string>
+    <string name="detail_screen_geography">Geography:</string>
+    <string name="detail_screen_details">Details:</string>
     <string-array name="section_names">
         <item>World</item>
         <item>U.S.</item>
