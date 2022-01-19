@@ -1,13 +1,16 @@
 package com.nytimesmostviewedarticles.network
 
-import com.nytimesmostviewedarticles.Constants
 import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.datatypes.NetworkResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val mediaTypeOfConcern = "image" // We only want "image" media from the API
+// NY times articles API key
+private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
+
+// We only want "image" media from the API
+private const val mediaTypeOfConcern = "image"
 
 interface ArticleApi {
     suspend fun getArticleDataForUi(): NetworkResponse
@@ -19,7 +22,7 @@ class NyTimesArticleApi @Inject constructor(
 ) : ArticleApi {
     override suspend fun getArticleDataForUi(): NetworkResponse {
         return try {
-            nyTimesApiService.getArticlesFromLastWeek(Constants.API_KEY)
+            nyTimesApiService.getArticlesFromLastWeek(API_KEY)
                 .results
                 .map { articleData ->
                     val mediaDataForUI = try {
