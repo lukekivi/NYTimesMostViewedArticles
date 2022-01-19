@@ -4,8 +4,8 @@ import android.util.Log
 import com.example.nytimesmostviewedarticles.Constants
 import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.example.nytimesmostviewedarticles.datatypes.MediaDataForUI
-import com.example.nytimesmostviewedarticles.datatypes.NyTimesArticleRequest
 import com.example.nytimesmostviewedarticles.datatypes.NetworkResponse
+import com.example.nytimesmostviewedarticles.datatypes.NyTimesArticleRequest
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit

@@ -1,7 +1,6 @@
 package com.example.nytimesmostviewedarticles.viewmodel
 
 import android.content.Context
-import androidx.compose.ui.res.stringArrayResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nytimesmostviewedarticles.R
