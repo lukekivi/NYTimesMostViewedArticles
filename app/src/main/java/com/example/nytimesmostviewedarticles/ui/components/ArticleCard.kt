@@ -67,12 +67,7 @@ fun ArticleCard(
                 modifier = modifier
                     .fillMaxWidth()
             ) {
-                FacetsLazyRow(
-                    facets = listOf(
-                        articleData.section,
-                        articleData.subsection
-                    ) + articleData.descriptionFacets
-                )
+                FacetsLazyRow(facets = articleData.descriptionFacets)
             }
 
         }

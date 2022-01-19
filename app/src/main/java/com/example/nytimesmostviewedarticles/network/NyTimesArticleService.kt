@@ -76,7 +76,7 @@ class NyTimesArticleService: ArticleService {
                         type = articleData.type,
                         title = articleData.title,
                         abstract = articleData.abstract,
-                        descriptionFacets = articleData.des_facet,
+                        descriptionFacets = listOf(articleData.section, articleData.subsection) + articleData.des_facet,
                         geographyFacets = articleData.geo_facet,
                         media = mediaDataForUI
                     )

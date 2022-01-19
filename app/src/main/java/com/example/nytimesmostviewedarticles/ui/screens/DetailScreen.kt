@@ -123,7 +123,7 @@ fun DetailScreenContent(
     )
     TitledFacetLazyRow(
         title = stringResource(R.string.detail_screen_details),
-        facets = listOf(articleData.section, articleData.subsection) + articleData.descriptionFacets,
+        facets = articleData.descriptionFacets,
         modifier = Modifier.padding(top = 20.dp)
     )
     TitledFacetLazyRow(
