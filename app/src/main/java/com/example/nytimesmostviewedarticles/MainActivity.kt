@@ -5,16 +5,21 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.composable
 import coil.annotation.ExperimentalCoilApi
 import com.example.nytimesmostviewedarticles.ui.screens.DetailScreen
 import com.example.nytimesmostviewedarticles.ui.screens.MainScreen
 import com.example.nytimesmostviewedarticles.viewmodel.ArticleDataViewModelImpl
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalCoilApi
@@ -22,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val articleDataViewModel: ArticleDataViewModelImpl by viewModels()
 
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,12 +37,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @ExperimentalAnimationApi
     @Composable
     fun ScreenDispatcher() {
-        val navController = rememberNavController()
+        val navController = rememberAnimatedNavController()
 
-        NavHost(navController = navController, startDestination = Constants.MAIN_SCREEN) {
-            composable(Constants.MAIN_SCREEN) {
+        AnimatedNavHost(navController = navController, startDestination = Constants.MAIN_SCREEN) {
+            composable(route = Constants.MAIN_SCREEN) {
                 MainScreen(
                     articleDataState = articleDataViewModel.articleDataState,
                     sectionNames = articleDataViewModel.sectionNames,
@@ -48,7 +55,11 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            composable(Constants.DETAILS_SCREEN) {
+            composable(
+                route = Constants.DETAILS_SCREEN,
+                enterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) },
+                exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }) }
+            ) {
                 Log.d("Navigation", "Composable launched")
                 DetailScreen(
                     appData = articleDataViewModel.selectedArticle,
