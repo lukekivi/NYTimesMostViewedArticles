@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -34,7 +35,7 @@ fun ArticleCard(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = modifier
-            .size(width = 750.dp, height = 225.dp)
+            .height(dimensionResource(id = R.dimen.article_card_row_height))
             .padding(start = 20.dp, end = 20.dp)
     ) {
         Column(
@@ -82,7 +83,10 @@ fun ArticleCard(
             } ?: painterResource(id = R.drawable.ic_the_new_york_times_alt),
             contentDescription = null,
             modifier = modifier
-                .size(width = 252.dp, height = 168.dp)
+                .size(
+                    width = dimensionResource(id = R.dimen.article_card_image_width),
+                    height = dimensionResource(id = R.dimen.article_card_image_height)
+                )
                 .weight(1f)
                 .clickable { onClick() }
         )

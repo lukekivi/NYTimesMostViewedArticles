@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -165,8 +166,8 @@ fun DetailScreenImage(
             ),
             contentDescription = null,
             modifier = Modifier.size(
-                width = Constants.DEFAULT_DETAIL_IMAGE_WIDTH.dp,
-                height = Constants.DEFAULT_DETAIL_IMAGE_HEIGHT.dp
+                width = dimensionResource(id = R.dimen.detail_screen_image_width),
+                height = dimensionResource(id = R.dimen.detail_screen_image_height),
             )
         )
         Text(
@@ -175,15 +176,15 @@ fun DetailScreenImage(
             fontSize = 12.sp,
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp)
-                .width(Constants.DEFAULT_DETAIL_IMAGE_WIDTH.dp)
+                .width(dimensionResource(id = R.dimen.detail_screen_image_width))
         )
 
     } ?: Image(
         painter = painterResource(id = R.drawable.ic_the_new_york_times_alt),
         contentDescription = null,
         modifier = Modifier.size(
-            width = Constants.DEFAULT_DETAIL_IMAGE_WIDTH.dp,
-            height = Constants.DEFAULT_DETAIL_IMAGE_HEIGHT.dp
+            width = dimensionResource(id = R.dimen.detail_screen_image_width),
+            height = dimensionResource(id = R.dimen.detail_screen_image_height)
         )
     )
 }
