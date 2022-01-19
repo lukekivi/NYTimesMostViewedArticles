@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">NY Times Most Viewed Articles</string>
+    <string name="article_card_published_line">Published \u0020</string>
+    <string name="app_bar_title">NY Times Most Viewed Articles</string>
+    <string name="no_active_article_data_request">No Active Request.</string>
+    <string-array name="section_names">
+        <item>World</item>
+        <item>U.S.</item>
+        <item>Politics</item>
+        <item>N.Y.</item>
+        <item>Business</item>
+        <item>Opinion</item>
+        <item>Tech</item>
+        <item>Science</item>
+        <item>Health</item>
+        <item>Sports</item>
+        <item>Arts</item>
+        <item>Books</item>
+        <item>Style</item>
+        <item>Food</item>
+        <item>Travel</item>
+        <item>Magazine</item>
+        <item>T Magazine</item>
+        <item>Real Estate</item>
+        <item>Video</item>
+    </string-array>
 </resources>
