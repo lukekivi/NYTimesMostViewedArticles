@@ -1,25 +1,17 @@
 package com.example.nytimesmostviewedarticles.ui.components
 
-import android.media.FaceDetector
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,25 +67,19 @@ fun ArticleCard(
                 modifier = modifier
                     .fillMaxWidth()
             ) {
-                FacetsLazyRow(
-                    facets = listOf(
-                        articleData.section,
-                        articleData.subsection
-                    ) + articleData.descriptionFacets
-                )
+                FacetsLazyRow(facets = articleData.descriptionFacets)
             }
 
         }
         Image(
-            painter = when (articleData.media) {
-                is MediaDataForUI.Available -> rememberImagePainter(
+            painter = articleData.media?.let {
+                rememberImagePainter(
                     data = articleData.media.url,
                     builder = {
                         placeholder(R.drawable.loading_animation)
                         transformations(CircleCropTransformation())
                     })
-                is MediaDataForUI.Unavailable -> painterResource(id = R.drawable.ic_the_new_york_times_alt)
-            },
+            } ?: painterResource(id = R.drawable.ic_the_new_york_times_alt),
             contentDescription = null,
             modifier = modifier
                 .size(width = 252.dp, height = 168.dp)
@@ -116,14 +102,14 @@ fun ArticleCardPreview() {
                 section = "World",
                 subsection = "Space",
                 byline = "",
-                type = "",
                 title = "First Cases of COVID-19 Have Reached the Moon.",
                 abstract = "",
                 descriptionFacets = listOf("COVID-19; Omicron"),
                 geographyFacets = listOf(""),
-                media = MediaDataForUI.Available(
+                media = MediaDataForUI(
                     url = "https://static01.nyt.com/images/2022/01/07/us/07virus-briefing-diabetes-misc/07virus-briefing-diabetes-misc-mediumThreeByTwo210.jpg",
-                    caption = ""
+                    caption = "",
+                    0
                 )
             ),
             {}

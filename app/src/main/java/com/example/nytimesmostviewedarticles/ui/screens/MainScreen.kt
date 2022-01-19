@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
@@ -16,12 +16,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.example.nytimesmostviewedarticles.R
+import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.example.nytimesmostviewedarticles.ui.components.ArticleCard
 import com.example.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.example.nytimesmostviewedarticles.ui.components.SectionsLazyRow
@@ -33,10 +34,8 @@ import kotlinx.coroutines.flow.StateFlow
 fun MainScreen(
     articleDataState: StateFlow<ArticleDataState>,
     sectionNames: Array<String>,
-    navController: NavController
+    onNavClick: (ArticleDataForUI) -> Unit
 ) {
-    val onNavClick = { index: Int -> }
-
     val articleData by articleDataState.collectAsState(ArticleDataState.Loading)
 
     Scaffold(
@@ -52,7 +51,7 @@ fun MainScreen(
             )
             Divider(
                 color = colorResource(id = R.color.black),
-                thickness = 2.dp
+                thickness = 1.dp
             )
             MainScreenPrimaryData(
                 articleData = articleData,
@@ -66,7 +65,7 @@ fun MainScreen(
 @Composable
 fun MainScreenPrimaryData(
     articleData: ArticleDataState,
-    onNavClick: (Int) -> Unit
+    onNavClick: (ArticleDataForUI) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -84,12 +83,19 @@ fun MainScreenPrimaryData(
                         fontSize = 32.sp
                     )
                 }
+                is ArticleDataState.Empty -> {
+                    Text(
+                        text = stringResource(R.string.main_screen_empty_data),
+                        textAlign = TextAlign.Center,
+                        fontSize = 32.sp
+                    )
+                }
                 is ArticleDataState.Success -> {
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        itemsIndexed(dataState.data) { index, data ->
-                            ArticleCard(articleData = data, onClick = { onNavClick(index) })
+                        items(dataState.data) { data ->
+                            ArticleCard(articleData = data, onClick = { onNavClick(data) })
                             Divider(
                                 color = colorResource(id = R.color.black),
                                 modifier = Modifier.fillMaxWidth(.95f)

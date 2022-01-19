@@ -4,8 +4,8 @@ import android.util.Log
 import com.example.nytimesmostviewedarticles.Constants
 import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import com.example.nytimesmostviewedarticles.datatypes.MediaDataForUI
-import com.example.nytimesmostviewedarticles.datatypes.NyTimesArticleRequest
 import com.example.nytimesmostviewedarticles.datatypes.NetworkResponse
+import com.example.nytimesmostviewedarticles.datatypes.NyTimesArticleRequest
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -17,9 +17,9 @@ import javax.inject.Singleton
 
 @Singleton
 class NyTimesArticleService: ArticleService {
+    private val mediaTypeOfConcern = "image" // We only want "image" media from the API
+
     private val baseUrl = "https://api.nytimes.com/svc/mostpopular/v2/viewed/"
-    private val mediaTypeOfConcern = "image"    // we are only concerned with images
-    private val imageHeightOfConcern = 293      // matches the largest image size available from NY Times API
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -51,26 +51,32 @@ class NyTimesArticleService: ArticleService {
                         val media = articleData.media
                             .first { it.type == mediaTypeOfConcern }
 
-                        MediaDataForUI.Available(
-                            url = media.mediaMetadata
-                                .first { it.height ==  imageHeightOfConcern}
-                                .url,
-                            caption = media.caption
+                        /**
+                         * Data is organized from smallest to largest.
+                         * The largest being a reasonable size. (440 x 293)
+                         */
+                        val mediaMetaData = media.mediaMetadata.last()
+
+                        MediaDataForUI(
+                            url = mediaMetaData.url,
+                            caption = media.caption,
+                            width = mediaMetaData.width
                         )
                     } catch (e: NoSuchElementException) {
-                        MediaDataForUI.Unavailable
+                        null
                     }
 
                     ArticleDataForUI(
                         url = articleData.url,
                         publishedDate = articleData.published_date,
+                        updated = articleData.updated,
                         section = articleData.section,
                         subsection = articleData.subsection,
                         byline = articleData.byline,
-                        type = articleData.type,
                         title = articleData.title,
                         abstract = articleData.abstract,
-                        descriptionFacets = articleData.des_facet,
+                        descriptionFacets = listOf(articleData.section, articleData.subsection) + articleData.des_facet,
+                        geographyFacets = articleData.geo_facet,
                         media = mediaDataForUI
                     )
                 }.let {
