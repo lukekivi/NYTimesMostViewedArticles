@@ -1,6 +1,6 @@
-package com.example.nytimesmostviewedarticles.viewmodel
+package com.nytimesmostviewedarticles.viewmodel
 
-import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
 import kotlinx.coroutines.flow.StateFlow
 
 interface ArticleDataViewModel {

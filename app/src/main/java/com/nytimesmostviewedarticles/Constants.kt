@@ -1,6 +1,6 @@
-package com.example.nytimesmostviewedarticles
+package com.nytimesmostviewedarticles
 
-import com.example.nytimesmostviewedarticles.network.NyTimesArticlePeriod
+import com.nytimesmostviewedarticles.network.NyTimesArticlePeriod
 
 object Constants {
     // navigation keys

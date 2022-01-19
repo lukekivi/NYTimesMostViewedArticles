@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.screens
+package com.nytimesmostviewedarticles.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,12 +21,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
-import com.example.nytimesmostviewedarticles.R
-import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
-import com.example.nytimesmostviewedarticles.ui.components.ArticleCard
-import com.example.nytimesmostviewedarticles.ui.components.NyTimesTopBar
-import com.example.nytimesmostviewedarticles.ui.components.SectionsLazyRow
-import com.example.nytimesmostviewedarticles.viewmodel.ArticleDataState
+import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.ui.components.ArticleCard
+import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
+import com.nytimesmostviewedarticles.ui.components.SectionsLazyRow
+import com.nytimesmostviewedarticles.viewmodel.ArticleDataState
 import kotlinx.coroutines.flow.StateFlow
 
 @ExperimentalCoilApi

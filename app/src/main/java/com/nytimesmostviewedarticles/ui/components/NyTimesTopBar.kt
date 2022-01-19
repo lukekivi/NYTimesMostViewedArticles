@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.components
+package com.nytimesmostviewedarticles.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.R
 
 @Composable
 fun NyTimesTopBar(

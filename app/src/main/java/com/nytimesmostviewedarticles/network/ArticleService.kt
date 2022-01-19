@@ -1,6 +1,6 @@
-package com.example.nytimesmostviewedarticles.network
+package com.nytimesmostviewedarticles.network
 
-import com.example.nytimesmostviewedarticles.datatypes.NetworkResponse
+import com.nytimesmostviewedarticles.datatypes.NetworkResponse
 
 interface ArticleService {
     suspend fun getArticleDataForUi(period: QueryPeriodLength): NetworkResponse

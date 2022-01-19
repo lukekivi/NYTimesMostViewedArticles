@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.datatypes
+package com.nytimesmostviewedarticles.datatypes
 
 import com.squareup.moshi.Json
 

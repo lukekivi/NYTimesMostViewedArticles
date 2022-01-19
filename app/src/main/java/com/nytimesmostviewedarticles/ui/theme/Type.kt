@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.theme
+package com.nytimesmostviewedarticles.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

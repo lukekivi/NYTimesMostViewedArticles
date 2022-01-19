@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.datatypes
+package com.nytimesmostviewedarticles.datatypes
 
 sealed class NetworkResponse {
     class Success(val dataForUi: List<ArticleDataForUI>): NetworkResponse()

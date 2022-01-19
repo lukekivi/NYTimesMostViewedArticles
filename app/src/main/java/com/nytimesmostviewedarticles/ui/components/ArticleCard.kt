@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.components
+package com.nytimesmostviewedarticles.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
-import com.example.nytimesmostviewedarticles.R
-import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
-import com.example.nytimesmostviewedarticles.datatypes.MediaDataForUI
-import com.example.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
+import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
+import com.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
 
 @ExperimentalCoilApi
 @Composable

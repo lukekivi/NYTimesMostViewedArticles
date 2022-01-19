@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles
+package com.nytimesmostviewedarticles
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

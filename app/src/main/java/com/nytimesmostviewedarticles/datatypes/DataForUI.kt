@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.datatypes
+package com.nytimesmostviewedarticles.datatypes
 
 data class ArticleDataForUI(
     val url: String,

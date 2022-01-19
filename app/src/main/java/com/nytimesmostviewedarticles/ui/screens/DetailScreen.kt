@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.screens
+package com.nytimesmostviewedarticles.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -27,12 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.example.nytimesmostviewedarticles.Constants
-import com.example.nytimesmostviewedarticles.R
-import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
-import com.example.nytimesmostviewedarticles.datatypes.MediaDataForUI
-import com.example.nytimesmostviewedarticles.ui.components.FacetsLazyRow
-import com.example.nytimesmostviewedarticles.ui.components.NyTimesTopBar
+import com.nytimesmostviewedarticles.Constants
+import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
+import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
+import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 
 @ExperimentalCoilApi
 @Composable

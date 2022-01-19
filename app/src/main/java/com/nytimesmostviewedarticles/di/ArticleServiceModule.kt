@@ -1,7 +1,7 @@
-package com.example.nytimesmostviewedarticles.di
+package com.nytimesmostviewedarticles.di
 
-import com.example.nytimesmostviewedarticles.network.ArticleService
-import com.example.nytimesmostviewedarticles.network.NyTimesArticleService
+import com.nytimesmostviewedarticles.network.ArticleService
+import com.nytimesmostviewedarticles.network.NyTimesArticleService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

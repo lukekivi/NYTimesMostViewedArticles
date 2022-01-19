@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles
+package com.nytimesmostviewedarticles
 
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.google.accompanist.navigation.animation.composable
 import coil.annotation.ExperimentalCoilApi
-import com.example.nytimesmostviewedarticles.ui.screens.DetailScreen
-import com.example.nytimesmostviewedarticles.ui.screens.MainScreen
-import com.example.nytimesmostviewedarticles.viewmodel.ArticleDataViewModelImpl
+import com.nytimesmostviewedarticles.ui.screens.DetailScreen
+import com.nytimesmostviewedarticles.ui.screens.MainScreen
+import com.nytimesmostviewedarticles.viewmodel.ArticleDataViewModelImpl
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint

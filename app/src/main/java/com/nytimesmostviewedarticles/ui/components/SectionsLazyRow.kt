@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.components
+package com.nytimesmostviewedarticles.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nytimesmostviewedarticles.R
-import com.example.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
+import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
 
 @Composable
 fun SectionsLazyRow(

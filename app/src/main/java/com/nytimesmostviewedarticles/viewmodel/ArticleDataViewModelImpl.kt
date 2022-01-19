@@ -1,13 +1,13 @@
-package com.example.nytimesmostviewedarticles.viewmodel
+package com.nytimesmostviewedarticles.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nytimesmostviewedarticles.Constants
-import com.example.nytimesmostviewedarticles.R
-import com.example.nytimesmostviewedarticles.datatypes.ArticleDataForUI
-import com.example.nytimesmostviewedarticles.datatypes.NetworkResponse
-import com.example.nytimesmostviewedarticles.network.ArticleService
+import com.nytimesmostviewedarticles.Constants
+import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.NetworkResponse
+import com.nytimesmostviewedarticles.network.ArticleService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

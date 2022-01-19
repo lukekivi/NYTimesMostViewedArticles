@@ -1,4 +1,4 @@
-package com.example.nytimesmostviewedarticles.ui.components
+package com.nytimesmostviewedarticles.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nytimesmostviewedarticles.R
-import com.example.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
+import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
 
 @Composable
 fun FacetsLazyRow(
