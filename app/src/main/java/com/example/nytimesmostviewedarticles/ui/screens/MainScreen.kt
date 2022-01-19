@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,6 +79,13 @@ fun MainScreenPrimaryData(
                 is ArticleDataState.Error -> {
                     Text(
                         text = dataState.message,
+                        textAlign = TextAlign.Center,
+                        fontSize = 32.sp
+                    )
+                }
+                is ArticleDataState.Empty -> {
+                    Text(
+                        text = stringResource(R.string.main_screen_empty_data),
                         textAlign = TextAlign.Center,
                         fontSize = 32.sp
                     )

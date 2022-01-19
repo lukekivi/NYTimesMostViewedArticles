@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 sealed class ArticleDataState {
     object Loading: ArticleDataState()
+    object Empty: ArticleDataState()
     class Success(val data: List<ArticleDataForUI>): ArticleDataState()
     class Error(val message: String): ArticleDataState()
 }
@@ -47,7 +48,11 @@ class ArticleDataViewModelImpl @Inject constructor(
                 .let { response ->
                     when (response) {
                         is NetworkResponse.Success -> _articleDataState.emit(
-                            ArticleDataState.Success(response.dataForUi)
+                            if (response.dataForUi.isEmpty()) {
+                                ArticleDataState.Empty
+                            }  else {
+                                ArticleDataState.Success(response.dataForUi)
+                            }
                         )
                         is NetworkResponse.Error -> _articleDataState.emit(
                             ArticleDataState.Error(response.message)

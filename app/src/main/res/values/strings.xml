@@ -9,6 +9,7 @@
     <string name="detail_screen_read_more">Read More</string>
     <string name="detail_screen_geography">Geography:</string>
     <string name="detail_screen_details">Details:</string>
+    <string name="main_screen_empty_data">No article data to display.</string>
     <string-array name="section_names">
         <item>World</item>
         <item>U.S.</item>
