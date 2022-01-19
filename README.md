@@ -8,11 +8,11 @@ This app displays details about NY Times most viewed articles from the past few 
 
 ## New York Times Most Viewed Articles API
 The time period options offered by the [API][1] are:
-|       App Enum Name        | Interval | Used |
-| -------------------------- | -------- | ---- |
-| NyTimesArticlePeriod.DAY   | 1 day    | No   |
-| NyTimesArticlePeriod.WEEK  | 7 days   | Yes  |
-| NyTimesArticlePeriod.MONTH | 30 days  | No   |
+| Interval | Used |
+| -------- | ---- |
+| 1 day    | No   |
+| 7 days   | Yes  |
+| 30 days  | No   |
 Will consider adding a period selector in the future.
 \
 \
