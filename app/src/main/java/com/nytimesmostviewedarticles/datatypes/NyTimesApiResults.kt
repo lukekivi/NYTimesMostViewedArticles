@@ -2,12 +2,14 @@ package com.nytimesmostviewedarticles.datatypes
 
 import com.squareup.moshi.Json
 
-data class NyTimesArticleRequest(
+
+data class NyTimesApiResults(
     @Json(name = "results") val results: List<ViewedArticle>
 )
 
 data class ViewedArticle(
     @Json(name = "url") val url: String,
+    @Json(name = "id") val id: String,
     @Json(name = "published_date") val published_date: String,
     @Json(name = "updated") val updated: String,
     @Json(name = "section") val section: String,

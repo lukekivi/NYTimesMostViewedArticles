@@ -18,22 +18,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.ArticleRowDataResponse
 import com.nytimesmostviewedarticles.ui.components.ArticleCard
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.nytimesmostviewedarticles.ui.components.SectionsLazyRow
-import com.nytimesmostviewedarticles.viewmodel.ArticleDataState
-import kotlinx.coroutines.flow.StateFlow
+import com.nytimesmostviewedarticles.viewmodel.MainScreenViewModelImpl
 
 @ExperimentalCoilApi
 @Composable
 fun MainScreen(
-    articleDataState: StateFlow<ArticleDataState>,
-    onNavClick: (ArticleDataForUI) -> Unit
+    mainScreenViewModel: MainScreenViewModelImpl = hiltViewModel(),
+    onNavClick: (String) -> Unit
 ) {
-    val articleData by articleDataState.collectAsState(ArticleDataState.Loading)
+    val articleData by mainScreenViewModel.articleDataState.collectAsState(ArticleRowDataResponse.Loading)
 
     Scaffold(
         topBar = { NyTimesTopBar() }
@@ -46,10 +46,12 @@ fun MainScreen(
                 sectionNames = stringArrayResource(id = R.array.section_names),
                 onSelected = {}
             )
+
             Divider(
                 color = colorResource(id = R.color.black),
                 thickness = 1.dp
             )
+
             MainScreenPrimaryData(
                 articleData = articleData,
                 onNavClick = onNavClick
@@ -61,45 +63,47 @@ fun MainScreen(
 @ExperimentalCoilApi
 @Composable
 fun MainScreenPrimaryData(
-    articleData: ArticleDataState,
-    onNavClick: (ArticleDataForUI) -> Unit
+    articleData: ArticleRowDataResponse,
+    onNavClick: (String) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        articleData.let { dataState ->
-            when (dataState) {
-                is ArticleDataState.Loading -> {
-                    CircularProgressIndicator(color = colorResource(id = R.color.black))
-                }
-                is ArticleDataState.Error -> {
-                    Text(
-                        text = dataState.message,
-                        textAlign = TextAlign.Center,
-                        fontSize = 32.sp
-                    )
-                }
-                is ArticleDataState.Empty -> {
-                    Text(
-                        text = stringResource(R.string.main_screen_empty_data),
-                        textAlign = TextAlign.Center,
-                        fontSize = 32.sp
-                    )
-                }
-                is ArticleDataState.Success -> {
-                    LazyColumn(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(dataState.data) { data ->
-                            ArticleCard(articleData = data, onClick = { onNavClick(data) })
-                            Divider(
-                                color = colorResource(id = R.color.black),
-                                modifier = Modifier
-                                    .padding(start = 20.dp, end = 20.dp)
-                                    .fillMaxWidth()
-                            )
-                        }
+        when (articleData) {
+            is ArticleRowDataResponse.Loading -> {
+                CircularProgressIndicator(color = colorResource(id = R.color.black))
+            }
+
+            is ArticleRowDataResponse.Error -> {
+                Text(
+                    text = articleData.message,
+                    textAlign = TextAlign.Center,
+                    fontSize = 32.sp
+                )
+            }
+
+            is ArticleRowDataResponse.Empty -> {
+                Text(
+                    text = stringResource(R.string.main_screen_empty_data),
+                    textAlign = TextAlign.Center,
+                    fontSize = 32.sp
+                )
+            }
+
+            is ArticleRowDataResponse.Success -> {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(articleData.articleDataForRows) { data ->
+                        ArticleCard(articleDataForRow = data, onClick = { onNavClick(data.id) })
+
+                        Divider(
+                            color = colorResource(id = R.color.black),
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 20.dp)
+                                .fillMaxWidth()
+                        )
                     }
                 }
             }

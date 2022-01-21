@@ -1,8 +1,8 @@
 package com.nytimesmostviewedarticles.di
 
-import com.nytimesmostviewedarticles.network.ArticleApi
+import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.network.NyTimesApiService
-import com.nytimesmostviewedarticles.network.NyTimesArticleApi
+import com.nytimesmostviewedarticles.network.NyTimesRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @Module
 class ArticleServiceModule {
     @Provides
-    fun providesArticleService(nyTimesApiService: NyTimesApiService): ArticleApi {
-        return NyTimesArticleApi(nyTimesApiService)
+    fun providesArticleService(nyTimesApiService: NyTimesApiService): NyTimesRepository {
+        return NyTimesRepositoryImpl(nyTimesApiService)
     }
 }

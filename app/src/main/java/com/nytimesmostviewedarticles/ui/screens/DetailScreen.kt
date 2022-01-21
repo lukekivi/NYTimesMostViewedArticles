@@ -8,6 +8,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,21 +28,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.nytimesmostviewedarticles.Constants
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.ArticleDetailResponse
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
+import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
 
 @ExperimentalCoilApi
 @Composable
 fun DetailScreen(
-    appData: ArticleDataForUI,
+    detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
+    articleId: String?,
     onNavClick: () -> Unit
 ) {
+    val defaultArticleDataResponse = if (articleId == null) {
+        ArticleDetailResponse.Error(stringResource(R.string.detail_screen_null_id))
+    } else {
+        detailsScreenViewModel.updateArticleDetail(articleId)
+        ArticleDetailResponse.Loading
+    }
+
+    val articleDetailResponse by detailsScreenViewModel.articleDetailResponse.collectAsState(defaultArticleDataResponse)
+
     Scaffold(
         topBar = {
             NyTimesTopBar(
@@ -48,14 +61,11 @@ fun DetailScreen(
             )
         }
     ) {
-        LazyColumn(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier.fillMaxSize()
         ) {
-            item {
-                DetailScreenContent(articleData = appData)
-            }
+            DetailScreenContent(articleDetailResponse = articleDetailResponse)
         }
     }
 }
@@ -64,92 +74,142 @@ fun DetailScreen(
 @ExperimentalCoilApi
 @Composable
 fun DetailScreenContent(
-    articleData: ArticleDataForUI
+    articleDetailResponse: ArticleDetailResponse
 ) {
-    Text(
-        text = articleData.title,
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 30.dp)
-    )
-    Divider(
-        color = colorResource(id = R.color.black),
-        thickness = 1.dp,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 10.dp, bottom = 10.dp)
-    )
+    when (articleDetailResponse) {
 
-    /*          Image and caption         */
-    DetailScreenImage(mediaDataForUI = articleData.media)
+        is ArticleDetailResponse.Loading -> {
+            CircularProgressIndicator(
+                color = colorResource(id = R.color.black),
+                modifier = Modifier.padding(top = 30.dp)
+            )
+        }
 
-    Divider(
-        color = colorResource(id = R.color.black),
-        thickness = 1.dp,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 10.dp, bottom = 10.dp)
-    )
-    Text(
-        text = stringResource(R.string.detail_screen_byline) + articleData.byline,
-        textAlign = TextAlign.Left,
-        fontFamily = FontFamily.Serif,
-        fontSize = 14.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 10.dp)
-    )
-    Text(
-        text = stringResource(R.string.detail_screen_published_by) + articleData.publishedDate
-                + stringResource(R.string.detail_screen_updated) + articleData.updated,
-        textAlign = TextAlign.Left,
-        fontFamily = FontFamily.Serif,
-        fontSize = 12.sp,
-        fontStyle = FontStyle.Italic,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-    )
-    Text(
-        text = articleData.abstract,
-        textAlign = TextAlign.Left,
-        fontFamily = FontFamily.Serif,
-        fontSize = 14.sp,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 10.dp)
-    )
-    TitledFacetLazyRow(
-        title = stringResource(R.string.detail_screen_details),
-        facets = articleData.descriptionFacets,
-        modifier = Modifier.padding(top = 20.dp)
-    )
-    TitledFacetLazyRow(
-        title = stringResource(R.string.detail_screen_geography),
-        facets = articleData.geographyFacets,
-        modifier = Modifier.padding(top = 20.dp)
-    )
-    Divider(
-        color = colorResource(id = R.color.black),
-        thickness = 1.dp,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 20.dp, bottom = 10.dp)
-    )
-    HyperlinkedText(
-        url = articleData.url,
-        text = stringResource(R.string.detail_screen_read_more)
-    )
-    Divider(
-        color = colorResource(id = R.color.black),
-        thickness = 1.dp,
-        modifier = Modifier
-            .fillMaxWidth(.9f)
-            .padding(top = 10.dp, bottom = 10.dp)
-    )
+        is ArticleDetailResponse.NoMatch -> {
+            Text(
+                text = stringResource(R.string.detail_screen_no_match),
+                textAlign = TextAlign.Center,
+                fontSize = 32.sp,
+                modifier = Modifier.padding(top = 30.dp)
+            )
+        }
+
+        is ArticleDetailResponse.Error -> {
+            Text(
+                text = articleDetailResponse.message,
+                textAlign = TextAlign.Center,
+                fontSize = 32.sp,
+                modifier = Modifier.padding(top = 30.dp)
+            )
+        }
+
+        is ArticleDetailResponse.Success -> {
+            val articleData = articleDetailResponse.articleDetailedData
+
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+
+                    Text(
+                        text = articleData.title,
+                        fontFamily = FontFamily.Serif,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 30.dp)
+                    )
+
+                    Divider(
+                        color = colorResource(id = R.color.black),
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 10.dp, bottom = 10.dp)
+                    )
+
+                    /*          Image and caption         */
+                    DetailScreenImage(mediaDataForUI = articleData.media)
+
+                    Divider(
+                        color = colorResource(id = R.color.black),
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 10.dp, bottom = 10.dp)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.detail_screen_byline) + articleData.byline,
+                        textAlign = TextAlign.Left,
+                        fontFamily = FontFamily.Serif,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 10.dp)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.detail_screen_published_by) + articleData.publishedDate
+                                + stringResource(R.string.detail_screen_updated) + articleData.updated,
+                        textAlign = TextAlign.Left,
+                        fontFamily = FontFamily.Serif,
+                        fontSize = 12.sp,
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                    )
+
+                    Text(
+                        text = articleData.abstract,
+                        textAlign = TextAlign.Left,
+                        fontFamily = FontFamily.Serif,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 10.dp)
+                    )
+
+                    TitledFacetLazyRow(
+                        title = stringResource(R.string.detail_screen_details),
+                        facets = articleData.descriptors,
+                        modifier = Modifier.padding(top = 20.dp)
+                    )
+
+                    TitledFacetLazyRow(
+                        title = stringResource(R.string.detail_screen_geography),
+                        facets = articleData.geographyFacets,
+                        modifier = Modifier.padding(top = 20.dp)
+                    )
+
+                    Divider(
+                        color = colorResource(id = R.color.black),
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 20.dp, bottom = 10.dp)
+                    )
+
+                    HyperlinkedText(
+                        url = articleData.url,
+                        text = stringResource(R.string.detail_screen_read_more)
+                    )
+
+                    Divider(
+                        color = colorResource(id = R.color.black),
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .padding(top = 10.dp, bottom = 10.dp)
+                    )
+                }
+            }
+        }
+    }
 }
 
 

@@ -20,14 +20,14 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleDataForUI
+import com.nytimesmostviewedarticles.datatypes.ArticleDataForRow
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
 
 @ExperimentalCoilApi
 @Composable
 fun ArticleCard(
-    articleData: ArticleDataForUI,
+    articleDataForRow: ArticleDataForRow,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -46,7 +46,7 @@ fun ArticleCard(
                 .weight(2.5f)
         ) {
             Text(
-                text = articleData.title,
+                text = articleDataForRow.title,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -56,7 +56,7 @@ fun ArticleCard(
                     .clickable { onClick() }
             )
             Text(
-                text = stringResource(R.string.article_card_published_line) + articleData.publishedDate,
+                text = stringResource(R.string.article_card_published_line) + articleDataForRow.publishedDate,
                 fontFamily = FontFamily.Serif,
                 fontStyle = FontStyle.Italic,
                 fontSize = 14.sp,
@@ -68,14 +68,14 @@ fun ArticleCard(
                 modifier = modifier
                     .fillMaxWidth()
             ) {
-                FacetsLazyRow(facets = articleData.descriptionFacets)
+                FacetsLazyRow(facets = articleDataForRow.descriptors)
             }
 
         }
         Image(
-            painter = articleData.media?.let {
+            painter = articleDataForRow.media?.let {
                 rememberImagePainter(
-                    data = articleData.media.url,
+                    data = articleDataForRow.media.url,
                     builder = {
                         placeholder(R.drawable.loading_animation)
                         transformations(CircleCropTransformation())
@@ -99,21 +99,15 @@ fun ArticleCard(
 fun ArticleCardPreview() {
     NYTimesMostViewedArticlesTheme {
         ArticleCard(
-            articleData = ArticleDataForUI(
-                url = "",
+            articleDataForRow = ArticleDataForRow(
+                id = "",
                 publishedDate = "March, 14 2022",
-                updated = "",
                 section = "World",
-                subsection = "Space",
-                byline = "",
                 title = "First Cases of COVID-19 Have Reached the Moon.",
-                abstract = "",
-                descriptionFacets = listOf("COVID-19; Omicron"),
-                geographyFacets = listOf(""),
+                descriptors = listOf("COVID-19; Omicron"),
                 media = MediaDataForUI(
                     url = "https://static01.nyt.com/images/2022/01/07/us/07virus-briefing-diabetes-misc/07virus-briefing-diabetes-misc-mediumThreeByTwo210.jpg",
-                    caption = "",
-                    0
+                    caption = ""
                 )
             ),
             {}
