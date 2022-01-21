@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 private const val TAG = "NyTimesRepositoryImpl"
 
@@ -25,9 +26,11 @@ class NyTimesRepositoryImpl @Inject constructor(
     private val nyTimesApiService: NyTimesApiService
 ) : NyTimesRepository {
     private var articleData: List<ArticleData>? = null
+    private val uid = Random.nextInt()
 
     override fun getArticleDataForRows() = flow {
         if (articleData == null) {
+            Log.d(TAG, "row -> article data is null ($uid)")
             emit(ArticleRowDataResponse.Loading)
             updateArticleDetailedData()
         }
@@ -41,20 +44,22 @@ class NyTimesRepositoryImpl @Inject constructor(
                 )
             )
         }
-    }.onCompletion {
-
-    }.catch {
+    }.catch { e ->
+        Log.d(TAG, e.stackTraceToString())
         articleData = listOf()
         emit(
             ArticleRowDataResponse.Error(
-                message = it.message ?: "Unknown error has occurred"
+                e.message ?: "Unknown error has occurred"
             )
         )
     }.flowOn(Dispatchers.IO)
 
 
     override fun getArticleDetailedDataResponse(id: String) = flow {
+        Log.d(TAG, "getArticleDetailedDataResponse(): $uid")
+
         if (articleData == null) {
+            Log.d(TAG, "article data is null")
             emit(ArticleDataResponse.Loading)
             updateArticleDetailedData()
         }

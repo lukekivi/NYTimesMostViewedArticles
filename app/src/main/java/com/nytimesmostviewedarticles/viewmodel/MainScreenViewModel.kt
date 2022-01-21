@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface MainScreenViewModel {
-    fun getArticles(): Flow<ArticleRowDataResponse>
+    val articles: Flow<ArticleRowDataResponse>
 }
 
 @HiltViewModel
 class MainScreenViewModelImpl @Inject constructor(
-    private val nyTimesRepository: NyTimesRepository
+    nyTimesRepository: NyTimesRepository
 ) : ViewModel(), MainScreenViewModel {
-    override fun getArticles() = nyTimesRepository.getArticleDataForRows()
+    override val articles = nyTimesRepository.getArticleDataForRows()
 
 }

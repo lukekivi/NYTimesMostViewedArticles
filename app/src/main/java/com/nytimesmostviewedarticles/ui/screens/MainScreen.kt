@@ -8,6 +8,8 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -31,7 +33,7 @@ fun MainScreen(
     mainScreenViewModel: MainScreenViewModelImpl = hiltViewModel(),
     onNavClick: (String) -> Unit
 ) {
-    val articleData by mainScreenViewModel.articleDataState.collectAsState(ArticleRowDataResponse.Loading)
+    val articleData by mainScreenViewModel.articles.collectAsState(ArticleRowDataResponse.Loading)
 
     Scaffold(
         topBar = { NyTimesTopBar() }
