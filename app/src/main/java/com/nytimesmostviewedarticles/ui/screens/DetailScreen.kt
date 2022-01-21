@@ -45,14 +45,7 @@ fun DetailScreen(
     articleId: String?,
     onNavClick: () -> Unit
 ) {
-    val defaultArticleDataResponse = if (articleId == null) {
-        ArticleDetailResponse.Error(stringResource(R.string.detail_screen_null_id))
-    } else {
-        detailsScreenViewModel.updateArticleDetail(articleId)
-        ArticleDetailResponse.Loading
-    }
-
-    val articleDetailResponse by detailsScreenViewModel.articleDetailResponse.collectAsState(defaultArticleDataResponse)
+    val articleDetailResponse by detailsScreenViewModel.getArticleDetail(articleId).collectAsState(ArticleDetailResponse.Loading)
 
     Scaffold(
         topBar = {

@@ -5,32 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.nytimesmostviewedarticles.datatypes.ArticleDetailResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface DetailScreenViewModel {
-    val articleDetailResponse: StateFlow<ArticleDetailResponse>
-    fun updateArticleDetail(id: String)
+    fun getArticleDetail(id: String?): Flow<ArticleDetailResponse>
 }
 
 @HiltViewModel
 class DetailScreenViewModelImpl @Inject constructor(
     private val nyTimesRepository: NyTimesRepository
 ): DetailScreenViewModel, ViewModel() {
-    private val _articleDetailResponse: MutableStateFlow<ArticleDetailResponse> = MutableStateFlow(ArticleDetailResponse.Loading)
-    override val articleDetailResponse: StateFlow<ArticleDetailResponse> = _articleDetailResponse
-
-    override fun updateArticleDetail(id: String) {
-        viewModelScope.launch {
-            if (_articleDetailResponse.value !is ArticleDetailResponse.Success ||
-                (_articleDetailResponse.value as ArticleDetailResponse.Success).articleDetailedData.id != id) {
-                    nyTimesRepository.getArticleDetailedDataResponse(id).collect {
-                    _articleDetailResponse.emit(it)
-                }
-            }
+    override fun getArticleDetail(id: String?) =
+        id?.let {
+            nyTimesRepository.getArticleDetailedDataResponse(id)
+        } ?: flow {
+            ArticleDetailResponse.Error("Error passing data between screens: null id.")
         }
-    }
 }

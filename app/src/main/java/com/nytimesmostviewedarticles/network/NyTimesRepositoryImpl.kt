@@ -1,5 +1,6 @@
 package com.nytimesmostviewedarticles.network
 
+import android.util.Log
 import com.nytimesmostviewedarticles.datatypes.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +10,8 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TAG = "NyTimesRepositoryImpl"
+
 // NY times articles API key
 private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
 
@@ -16,8 +19,8 @@ private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
 private const val MEDIA_TYPE_OF_CONCERN = "image"
 
 interface NyTimesRepository {
-    suspend fun getArticleDataForRows(): Flow<ArticleRowDataResponse>
-    suspend fun getArticleDetailedDataResponse(id: String): Flow<ArticleDetailResponse>
+    fun getArticleDataForRows(): Flow<ArticleRowDataResponse>
+    fun getArticleDetailedDataResponse(id: String): Flow<ArticleDetailResponse>
 }
 
 @Singleton
@@ -26,7 +29,7 @@ class NyTimesRepositoryImpl @Inject constructor(
 ) : NyTimesRepository {
     private var articleDetailedData: List<ArticleDetailedData>? = null
 
-    override suspend fun getArticleDataForRows() = flow {
+    override fun getArticleDataForRows() = flow {
         if (articleDetailedData == null) {
             emit(ArticleRowDataResponse.Loading)
             updateArticleDetailedData()
@@ -51,7 +54,7 @@ class NyTimesRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    override suspend fun getArticleDetailedDataResponse(id: String) = flow {
+    override fun getArticleDetailedDataResponse(id: String) = flow {
         if (articleDetailedData == null) {
             emit(ArticleDetailResponse.Loading)
             updateArticleDetailedData()
@@ -73,6 +76,7 @@ class NyTimesRepositoryImpl @Inject constructor(
 
 
     private suspend fun updateArticleDetailedData() {
+        Log.d(TAG, "updateArticleDetailedData()")
         articleDetailedData = nyTimesApiService
             .getArticlesFromLastWeek(API_KEY)
             .results
