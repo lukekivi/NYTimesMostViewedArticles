@@ -13,7 +13,9 @@ import javax.inject.Singleton
 private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
 
 // We only want "image" media from the API
-private const val mediaTypeOfConcern = "image"
+private const val MEDIA_TYPE_OF_CONCERN = "image"
+
+
 
 interface NyTimesRepository {
     suspend fun getArticleDataForRows(): Flow<ArticleRowDataResponse>
@@ -91,7 +93,7 @@ class NyTimesRepositoryImpl @Inject constructor(
     private fun ViewedArticle.toArticleDetailedData(): ArticleDetailedData {
         val mediaDataForUI = try {
             val media = media
-                .first { it.type == mediaTypeOfConcern }
+                .first { it.type == MEDIA_TYPE_OF_CONCERN }
 
             /**
              * Data is organized from smallest to largest.
