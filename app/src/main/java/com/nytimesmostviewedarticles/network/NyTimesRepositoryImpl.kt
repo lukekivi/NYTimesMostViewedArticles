@@ -1,14 +1,10 @@
 package com.nytimesmostviewedarticles.network
 
-import android.util.Log
 import com.nytimesmostviewedarticles.datatypes.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
-
-private const val TAG = "NyTimesRepositoryImpl"
 
 // NY times articles API key
 private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
@@ -26,11 +22,9 @@ class NyTimesRepositoryImpl @Inject constructor(
     private val nyTimesApiService: NyTimesApiService
 ) : NyTimesRepository {
     private var articleData: List<ArticleData>? = null
-    private val uid = Random.nextInt()
 
     override fun getArticleDataForRows() = flow {
         if (articleData == null) {
-            Log.d(TAG, "row -> article data is null ($uid)")
             emit(ArticleRowDataResponse.Loading)
             updateArticleDetailedData()
         }
@@ -45,7 +39,6 @@ class NyTimesRepositoryImpl @Inject constructor(
             )
         }
     }.catch { e ->
-        Log.d(TAG, e.stackTraceToString())
         articleData = listOf()
         emit(
             ArticleRowDataResponse.Error(
@@ -56,10 +49,7 @@ class NyTimesRepositoryImpl @Inject constructor(
 
 
     override fun getArticleDetailedDataResponse(id: String) = flow {
-        Log.d(TAG, "getArticleDetailedDataResponse(): $uid")
-
         if (articleData == null) {
-            Log.d(TAG, "article data is null")
             emit(ArticleDataResponse.Loading)
             updateArticleDetailedData()
         }
@@ -80,7 +70,6 @@ class NyTimesRepositoryImpl @Inject constructor(
 
 
     private suspend fun updateArticleDetailedData() {
-        Log.d(TAG, "updateArticleDetailedData()")
         articleData = nyTimesApiService
             .getArticlesFromLastWeek(API_KEY)
             .results
