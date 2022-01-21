@@ -230,6 +230,7 @@ fun DetailScreenImage(
                 height = dimensionResource(id = R.dimen.detail_screen_image_height),
             )
         )
+
         Text(
             text = mediaData.caption,
             fontFamily = FontFamily.Serif,
@@ -267,6 +268,7 @@ fun TitledFacetLazyRow(
                 .padding(bottom = 10.dp)
                 .fillMaxWidth(.9f)
         )
+
         FacetsLazyRow(
             facets = facets,
             Modifier.fillMaxWidth(.9f)

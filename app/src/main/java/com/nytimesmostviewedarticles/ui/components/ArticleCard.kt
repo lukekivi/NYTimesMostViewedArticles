@@ -55,6 +55,7 @@ fun ArticleCard(
                     .fillMaxWidth()
                     .clickable { onClick() }
             )
+
             Text(
                 text = stringResource(R.string.article_card_published_line) + articleDataForRow.publishedDate,
                 fontFamily = FontFamily.Serif,
@@ -64,6 +65,7 @@ fun ArticleCard(
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
             )
+
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -72,6 +74,7 @@ fun ArticleCard(
             }
 
         }
+
         Image(
             painter = articleDataForRow.media?.let {
                 rememberImagePainter(
