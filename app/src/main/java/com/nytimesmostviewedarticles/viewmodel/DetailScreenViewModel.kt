@@ -1,16 +1,14 @@
 package com.nytimesmostviewedarticles.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.nytimesmostviewedarticles.datatypes.ArticleDetailResponse
+import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface DetailScreenViewModel {
-    fun getArticleDetail(id: String?): Flow<ArticleDetailResponse>
+    fun getArticleDetail(id: String?): Flow<ArticleDataResponse>
 }
 
 @HiltViewModel
@@ -21,6 +19,6 @@ class DetailScreenViewModelImpl @Inject constructor(
         id?.let {
             nyTimesRepository.getArticleDetailedDataResponse(id)
         } ?: flow {
-            ArticleDetailResponse.Error("Error passing data between screens: null id.")
+            ArticleDataResponse.Error("Error passing data between screens: null id.")
         }
 }

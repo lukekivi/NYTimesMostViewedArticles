@@ -3,10 +3,7 @@ package com.nytimesmostviewedarticles.network
 import android.util.Log
 import com.nytimesmostviewedarticles.datatypes.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,32 +17,34 @@ private const val MEDIA_TYPE_OF_CONCERN = "image"
 
 interface NyTimesRepository {
     fun getArticleDataForRows(): Flow<ArticleRowDataResponse>
-    fun getArticleDetailedDataResponse(id: String): Flow<ArticleDetailResponse>
+    fun getArticleDetailedDataResponse(id: String): Flow<ArticleDataResponse>
 }
 
 @Singleton
 class NyTimesRepositoryImpl @Inject constructor(
     private val nyTimesApiService: NyTimesApiService
 ) : NyTimesRepository {
-    private var articleDetailedData: List<ArticleDetailedData>? = null
+    private var articleData: List<ArticleData>? = null
 
     override fun getArticleDataForRows() = flow {
-        if (articleDetailedData == null) {
+        if (articleData == null) {
             emit(ArticleRowDataResponse.Loading)
             updateArticleDetailedData()
         }
 
-        if (articleDetailedData!!.isEmpty()) {
+        if (articleData!!.isEmpty()) {
             emit(ArticleRowDataResponse.Empty)
         } else {
             emit(
                 ArticleRowDataResponse.Success(
-                    articleDataForRows = articleDetailedData!!.map { it.toArticleDataForRow() }
+                    articleRowData = articleData!!.map { it.toArticleDataForRow() }
                 )
             )
         }
+    }.onCompletion {
+
     }.catch {
-        articleDetailedData = listOf()
+        articleData = listOf()
         emit(
             ArticleRowDataResponse.Error(
                 message = it.message ?: "Unknown error has occurred"
@@ -55,20 +54,20 @@ class NyTimesRepositoryImpl @Inject constructor(
 
 
     override fun getArticleDetailedDataResponse(id: String) = flow {
-        if (articleDetailedData == null) {
-            emit(ArticleDetailResponse.Loading)
+        if (articleData == null) {
+            emit(ArticleDataResponse.Loading)
             updateArticleDetailedData()
         }
 
         emit(
-            articleDetailedData!!.firstOrNull { it.id == id }?.let {
-                ArticleDetailResponse.Success(articleDetailedData = it)
-            } ?: ArticleDetailResponse.NoMatch
+            articleData!!.firstOrNull { it.id == id }?.let {
+                ArticleDataResponse.Success(articleData = it)
+            } ?: ArticleDataResponse.NoMatch
         )
     }.catch {
-        articleDetailedData = listOf()
+        articleData = listOf()
         emit(
-            ArticleDetailResponse.Error(
+            ArticleDataResponse.Error(
                 message = it.message ?: "Unknown error has occurred"
             )
         )
@@ -77,14 +76,14 @@ class NyTimesRepositoryImpl @Inject constructor(
 
     private suspend fun updateArticleDetailedData() {
         Log.d(TAG, "updateArticleDetailedData()")
-        articleDetailedData = nyTimesApiService
+        articleData = nyTimesApiService
             .getArticlesFromLastWeek(API_KEY)
             .results
             .map { it.toArticleDetailedData() }
     }
 
 
-    private fun ArticleDetailedData.toArticleDataForRow() = ArticleDataForRow(
+    private fun ArticleData.toArticleDataForRow() = ArticleRowData(
         id = id,
         publishedDate = publishedDate,
         section = section,
@@ -94,7 +93,7 @@ class NyTimesRepositoryImpl @Inject constructor(
     )
 
 
-    private fun ViewedArticle.toArticleDetailedData(): ArticleDetailedData {
+    private fun ViewedArticle.toArticleDetailedData(): ArticleData {
         val media = media
             .firstOrNull { it.type == MEDIA_TYPE_OF_CONCERN }
 
@@ -112,7 +111,7 @@ class NyTimesRepositoryImpl @Inject constructor(
                 )
             }
 
-        return ArticleDetailedData(
+        return ArticleData(
             id = id,
             url = url,
             publishedDate = published_date,

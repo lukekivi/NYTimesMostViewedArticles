@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleDetailResponse
+import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
@@ -45,7 +45,7 @@ fun DetailScreen(
     articleId: String?,
     onNavClick: () -> Unit
 ) {
-    val articleDetailResponse by detailsScreenViewModel.getArticleDetail(articleId).collectAsState(ArticleDetailResponse.Loading)
+    val articleDetailResponse by detailsScreenViewModel.getArticleDetail(articleId).collectAsState(ArticleDataResponse.Loading)
 
     Scaffold(
         topBar = {
@@ -58,7 +58,7 @@ fun DetailScreen(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier.fillMaxSize()
         ) {
-            DetailScreenContent(articleDetailResponse = articleDetailResponse)
+            DetailScreenContent(articleDataResponse = articleDetailResponse)
         }
     }
 }
@@ -67,18 +67,18 @@ fun DetailScreen(
 @ExperimentalCoilApi
 @Composable
 fun DetailScreenContent(
-    articleDetailResponse: ArticleDetailResponse
+    articleDataResponse: ArticleDataResponse
 ) {
-    when (articleDetailResponse) {
+    when (articleDataResponse) {
 
-        is ArticleDetailResponse.Loading -> {
+        is ArticleDataResponse.Loading -> {
             CircularProgressIndicator(
                 color = colorResource(id = R.color.black),
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
 
-        is ArticleDetailResponse.NoMatch -> {
+        is ArticleDataResponse.NoMatch -> {
             Text(
                 text = stringResource(R.string.detail_screen_no_match),
                 textAlign = TextAlign.Center,
@@ -87,17 +87,17 @@ fun DetailScreenContent(
             )
         }
 
-        is ArticleDetailResponse.Error -> {
+        is ArticleDataResponse.Error -> {
             Text(
-                text = articleDetailResponse.message,
+                text = articleDataResponse.message,
                 textAlign = TextAlign.Center,
                 fontSize = 32.sp,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
 
-        is ArticleDetailResponse.Success -> {
-            val articleData = articleDetailResponse.articleDetailedData
+        is ArticleDataResponse.Success -> {
+            val articleData = articleDataResponse.articleData
 
             LazyColumn(
                 verticalArrangement = Arrangement.Top,

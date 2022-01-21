@@ -3,7 +3,7 @@ package com.nytimesmostviewedarticles.datatypes
 /**
  * Article data for article cards in main screen lazy column.
  */
-data class ArticleDataForRow(
+data class ArticleRowData(
     val id: String,
     val publishedDate: String,
     val section: String,
@@ -15,7 +15,7 @@ data class ArticleDataForRow(
 /**
  * Article data for detail screen.
  */
-data class ArticleDetailedData(
+data class ArticleData(
     val id: String,
     val url: String,
     val publishedDate: String,

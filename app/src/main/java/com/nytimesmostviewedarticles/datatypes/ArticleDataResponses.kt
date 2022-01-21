@@ -6,16 +6,16 @@ package com.nytimesmostviewedarticles.datatypes
 sealed class ArticleRowDataResponse {
     object Loading: ArticleRowDataResponse()
     object Empty: ArticleRowDataResponse()
-    class Success(val articleDataForRows: List<ArticleDataForRow>): ArticleRowDataResponse()
+    class Success(val articleRowData: List<ArticleRowData>): ArticleRowDataResponse()
     class Error(val message: String): ArticleRowDataResponse()
 }
 
 /**
  * Response model for detail screen.
  */
-sealed class ArticleDetailResponse {
-    object Loading: ArticleDetailResponse()
-    object NoMatch: ArticleDetailResponse()
-    class Success(val articleDetailedData: ArticleDetailedData): ArticleDetailResponse()
-    class Error(val message: String): ArticleDetailResponse()
+sealed class ArticleDataResponse {
+    object Loading: ArticleDataResponse()
+    object NoMatch: ArticleDataResponse()
+    class Success(val articleData: ArticleData): ArticleDataResponse()
+    class Error(val message: String): ArticleDataResponse()
 }

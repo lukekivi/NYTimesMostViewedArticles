@@ -20,14 +20,14 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleDataForRow
+import com.nytimesmostviewedarticles.datatypes.ArticleRowData
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
 
 @ExperimentalCoilApi
 @Composable
 fun ArticleCard(
-    articleDataForRow: ArticleDataForRow,
+    articleRowData: ArticleRowData,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -46,7 +46,7 @@ fun ArticleCard(
                 .weight(2.5f)
         ) {
             Text(
-                text = articleDataForRow.title,
+                text = articleRowData.title,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -57,7 +57,7 @@ fun ArticleCard(
             )
 
             Text(
-                text = stringResource(R.string.article_card_published_line) + articleDataForRow.publishedDate,
+                text = stringResource(R.string.article_card_published_line) + articleRowData.publishedDate,
                 fontFamily = FontFamily.Serif,
                 fontStyle = FontStyle.Italic,
                 fontSize = 14.sp,
@@ -70,15 +70,15 @@ fun ArticleCard(
                 modifier = modifier
                     .fillMaxWidth()
             ) {
-                FacetsLazyRow(facets = articleDataForRow.descriptors)
+                FacetsLazyRow(facets = articleRowData.descriptors)
             }
 
         }
 
         Image(
-            painter = articleDataForRow.media?.let {
+            painter = articleRowData.media?.let {
                 rememberImagePainter(
-                    data = articleDataForRow.media.url,
+                    data = articleRowData.media.url,
                     builder = {
                         placeholder(R.drawable.loading_animation)
                         transformations(CircleCropTransformation())
@@ -102,7 +102,7 @@ fun ArticleCard(
 fun ArticleCardPreview() {
     NYTimesMostViewedArticlesTheme {
         ArticleCard(
-            articleDataForRow = ArticleDataForRow(
+            articleRowData = ArticleRowData(
                 id = "",
                 publishedDate = "March, 14 2022",
                 section = "World",
