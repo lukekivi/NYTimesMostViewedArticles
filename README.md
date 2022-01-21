@@ -2,7 +2,7 @@
 This app displays details about NY Times most viewed articles from the past few days. Users can select articles they are interested in and view more details. In order to view the full article the user can click the "Read More" hyperlink in the DetailsScreen.
 
 ## Setup
-- Download `git clone https://github.com/lukekivi/NYTimesMostViewedArticles.git` or just download zip from git.
+- Run `git clone https://github.com/lukekivi/NYTimesMostViewedArticles.git` or just download zip from git.
 - Install onto your device
 - Run.
 
@@ -33,6 +33,10 @@ The queried article data includes media. This app is only concerned with exposin
 |   Image Loading      |              Coil                  |
 | Dependency Injection |              Hilt                  |
 | Asynchronous Ops     |           Coroutines               |
+
+## Future Changes
+- Add sort functionality to section row on top of the main screen.
+- Add Room persistence for a local backup of data acquired from the API.
 
 ## Links
 - [Git](https://github.com/lukekivi/NYTimesMostViewedArticles)
