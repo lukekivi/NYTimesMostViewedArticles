@@ -50,6 +50,7 @@ class NyTimesRepositoryImpl @Inject constructor(
         )
     }.flowOn(Dispatchers.IO)
 
+
     override suspend fun getArticleDetailedDataResponse(id: String) = flow {
         if (articleDetailedData == null) {
             emit(ArticleDetailResponse.Loading)
@@ -61,7 +62,6 @@ class NyTimesRepositoryImpl @Inject constructor(
                 ArticleDetailResponse.Success(articleDetailedData = it)
             } ?: ArticleDetailResponse.NoMatch
         )
-
     }.catch {
         articleDetailedData = listOf()
         emit(
@@ -79,6 +79,7 @@ class NyTimesRepositoryImpl @Inject constructor(
             .map { it.toArticleDetailedData() }
     }
 
+
     private fun ArticleDetailedData.toArticleDataForRow() = ArticleDataForRow(
         id = id,
         publishedDate = publishedDate,
@@ -88,24 +89,24 @@ class NyTimesRepositoryImpl @Inject constructor(
         media = media
     )
 
+
     private fun ViewedArticle.toArticleDetailedData(): ArticleDetailedData {
-        val mediaDataForUI = try {
-            val media = media
-                .first { it.type == MEDIA_TYPE_OF_CONCERN }
+        val media = media
+            .firstOrNull { it.type == MEDIA_TYPE_OF_CONCERN }
 
-            /**
-             * Data is organized from smallest to largest.
-             * The largest being a reasonable size. (440 x 293)
-             */
-            val mediaMetaData = media.mediaMetadata.last()
-
-            MediaDataForUI(
-                url = mediaMetaData.url,
-                caption = media.caption
-            )
-        } catch (e: NoSuchElementException) {
-            null
-        }
+        /**
+         * Data is organized from smallest to largest.
+         * The largest being a reasonable size. (440 x 293)
+         */
+        val mediaDataForUI = media
+            ?.mediaMetadata
+            ?.lastOrNull()
+            ?.let {
+                MediaDataForUI(
+                    url = it.url,
+                    caption = media.caption
+                )
+            }
 
         return ArticleDetailedData(
             id = id,
