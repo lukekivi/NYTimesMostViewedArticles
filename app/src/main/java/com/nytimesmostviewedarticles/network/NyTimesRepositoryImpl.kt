@@ -1,7 +1,7 @@
 package com.nytimesmostviewedarticles.network
 
 import com.nytimesmostviewedarticles.datatypes.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -14,8 +14,6 @@ private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
 
 // We only want "image" media from the API
 private const val MEDIA_TYPE_OF_CONCERN = "image"
-
-
 
 interface NyTimesRepository {
     suspend fun getArticleDataForRows(): Flow<ArticleRowDataResponse>

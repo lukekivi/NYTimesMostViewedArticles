@@ -1,7 +1,7 @@
 package com.nytimesmostviewedarticles.di
 
-import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.network.NyTimesApiService
+import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.network.NyTimesRepositoryImpl
 import dagger.Module
 import dagger.Provides
