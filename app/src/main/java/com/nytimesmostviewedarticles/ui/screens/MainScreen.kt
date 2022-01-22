@@ -39,7 +39,7 @@ fun MainScreen(
         ) {
             SectionsLazyRow(
                 sectionNames = stringArrayResource(id = R.array.section_names),
-                onSelected = {}
+                onSelected = { mainScreenViewModel.updateFilter(it) }
             )
 
             Divider(

@@ -11,7 +11,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nytimesmostviewedarticles.R
@@ -20,7 +19,7 @@ import com.nytimesmostviewedarticles.ui.theme.NYTimesTheme
 @Composable
 fun SectionsLazyRow(
     sectionNames: Array<String>,
-    onSelected: (Int) -> Unit,
+    onSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -32,7 +31,7 @@ fun SectionsLazyRow(
             Column(
                 modifier = modifier
                     .padding(start = 10.dp, end = 10.dp)
-                    .clickable { onSelected(index) }
+                    .clickable { onSelected(sectionNames[index]) }
             ) {
                 Text(
                     text = section,
