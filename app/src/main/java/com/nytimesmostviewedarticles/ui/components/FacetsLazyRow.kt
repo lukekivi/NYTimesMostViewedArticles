@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.ui.theme.NYTimesMostViewedArticlesTheme
+import com.nytimesmostviewedarticles.ui.theme.NYTimesTheme
 
 @Composable
 fun FacetsLazyRow(
@@ -53,16 +54,15 @@ fun TextCircle(
                 .wrapContentSize()
                 .border(
                     width = .5.dp,
-                    color = colorResource(id = R.color.black),
+                    color = MaterialTheme.colors.primary,
                     shape = RoundedCornerShape(15.dp)
                 )
-                .background(color = Color.White)
+                .background(color = MaterialTheme.colors.background)
         ) {
             Text(
                 text = text,
+                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
-                fontFamily = FontFamily.Serif,
-                fontSize = 12.sp,
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -74,7 +74,7 @@ fun TextCircle(
 @Preview(showBackground = true)
 @Composable
 fun TextCirclePreview() {
-    NYTimesMostViewedArticlesTheme {
+    NYTimesTheme {
         TextCircle(
             text = "Section",
         )
@@ -84,7 +84,7 @@ fun TextCirclePreview() {
 @Preview(showBackground = true)
 @Composable
 fun FacetsLazyRowPreview() {
-    NYTimesMostViewedArticlesTheme {
+    NYTimesTheme {
         FacetsLazyRow(facets = listOf("World", "Space", "COVID-19; Omicron", "Milky Way", "Moon", "Universe"))
     }
 }

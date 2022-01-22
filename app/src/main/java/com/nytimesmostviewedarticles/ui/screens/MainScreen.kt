@@ -3,10 +3,7 @@ package com.nytimesmostviewedarticles.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,7 +45,7 @@ fun MainScreen(
             )
 
             Divider(
-                color = colorResource(id = R.color.black),
+                color = MaterialTheme.colors.secondary,
                 thickness = 1.dp
             )
 
@@ -78,16 +75,14 @@ fun MainScreenPrimaryData(
             is ArticleRowDataResponse.Error -> {
                 Text(
                     text = articleData.message,
-                    textAlign = TextAlign.Center,
-                    fontSize = 32.sp
+                    style = MaterialTheme.typography.h6
                 )
             }
 
             is ArticleRowDataResponse.Empty -> {
                 Text(
                     text = stringResource(R.string.main_screen_empty_data),
-                    textAlign = TextAlign.Center,
-                    fontSize = 32.sp
+                    style = MaterialTheme.typography.h6
                 )
             }
 
@@ -99,7 +94,7 @@ fun MainScreenPrimaryData(
                         ArticleCard(articleRowData = data, onClick = { onNavClick(data.id) })
 
                         Divider(
-                            color = colorResource(id = R.color.black),
+                            color = MaterialTheme.colors.secondary,
                             modifier = Modifier
                                 .padding(start = 20.dp, end = 20.dp)
                                 .fillMaxWidth()

@@ -73,7 +73,7 @@ fun DetailScreenContent(
 
         is ArticleDataResponse.Loading -> {
             CircularProgressIndicator(
-                color = colorResource(id = R.color.black),
+                color = MaterialTheme.colors.secondary,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
@@ -81,8 +81,7 @@ fun DetailScreenContent(
         is ArticleDataResponse.NoMatch -> {
             Text(
                 text = stringResource(R.string.detail_screen_no_match),
-                textAlign = TextAlign.Center,
-                fontSize = 32.sp,
+                style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
@@ -90,8 +89,7 @@ fun DetailScreenContent(
         is ArticleDataResponse.Error -> {
             Text(
                 text = articleDataResponse.message,
-                textAlign = TextAlign.Center,
-                fontSize = 32.sp,
+                style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
@@ -108,63 +106,45 @@ fun DetailScreenContent(
 
                     Text(
                         text = articleData.title,
-                        fontFamily = FontFamily.Serif,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
+                        style = MaterialTheme.typography.h2,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
                             .padding(top = 30.dp)
                     )
 
                     Divider(
-                        color = colorResource(id = R.color.black),
+                        color = MaterialTheme.colors.secondary,
                         thickness = 1.dp,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
-                            .padding(top = 10.dp, bottom = 10.dp)
+                            .padding(top = 20.dp, bottom = 20.dp)
                     )
 
                     /*          Image and caption         */
                     DetailScreenImage(mediaDataForUI = articleData.media)
 
-                    Divider(
-                        color = colorResource(id = R.color.black),
-                        thickness = 1.dp,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 10.dp, bottom = 10.dp)
-                    )
-
                     Text(
                         text = stringResource(R.string.detail_screen_byline) + articleData.byline,
-                        textAlign = TextAlign.Left,
-                        fontFamily = FontFamily.Serif,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.h3,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
-                            .padding(top = 10.dp)
+                            .padding(top = 20.dp)
                     )
 
                     Text(
                         text = stringResource(R.string.detail_screen_published_by) + articleData.publishedDate
                                 + stringResource(R.string.detail_screen_updated) + articleData.updated,
-                        textAlign = TextAlign.Left,
-                        fontFamily = FontFamily.Serif,
-                        fontSize = 12.sp,
-                        fontStyle = FontStyle.Italic,
+                        style = MaterialTheme.typography.subtitle2,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
                     )
 
                     Text(
                         text = articleData.abstract,
-                        textAlign = TextAlign.Left,
-                        fontFamily = FontFamily.Serif,
-                        fontSize = 14.sp,
+                        style = MaterialTheme.typography.body1,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
-                            .padding(top = 10.dp)
+                            .padding(top = 20.dp)
                     )
 
                     TitledFacetLazyRow(
@@ -180,24 +160,16 @@ fun DetailScreenContent(
                     )
 
                     Divider(
-                        color = colorResource(id = R.color.black),
+                        color = MaterialTheme.colors.secondary,
                         thickness = 1.dp,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
-                            .padding(top = 20.dp, bottom = 10.dp)
+                            .padding(top = 30.dp, bottom = 30.dp)
                     )
 
                     HyperlinkedText(
                         url = articleData.url,
                         text = stringResource(R.string.detail_screen_read_more)
-                    )
-
-                    Divider(
-                        color = colorResource(id = R.color.black),
-                        thickness = 1.dp,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 10.dp, bottom = 10.dp)
                     )
                 }
             }
@@ -226,8 +198,7 @@ fun DetailScreenImage(
 
         Text(
             text = mediaData.caption,
-            fontFamily = FontFamily.Serif,
-            fontSize = 12.sp,
+            style = MaterialTheme.typography.caption,
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp)
                 .width(dimensionResource(id = R.dimen.detail_screen_image_width))
@@ -253,10 +224,7 @@ fun TitledFacetLazyRow(
     if (facets.isNotEmpty()) {
         Text(
             text = title,
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Serif,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.h3,
             modifier = modifier
                 .padding(bottom = 10.dp)
                 .fillMaxWidth(.9f)

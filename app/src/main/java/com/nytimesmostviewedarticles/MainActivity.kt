@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
@@ -15,6 +16,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.nytimesmostviewedarticles.ui.screens.DetailScreen
 import com.nytimesmostviewedarticles.ui.screens.MainScreen
+import com.nytimesmostviewedarticles.ui.theme.NYTimesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 sealed class Destinations(val route: String) {
@@ -33,8 +35,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Surface(color = colorResource(id = R.color.white)) {
-                ScreenDispatcher()
+            NYTimesTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    ScreenDispatcher()
+                }
             }
         }
     }
