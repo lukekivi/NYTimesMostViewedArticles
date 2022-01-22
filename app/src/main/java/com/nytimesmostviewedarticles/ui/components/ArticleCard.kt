@@ -11,24 +11,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleRowData
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.theme.NYTimesTheme
 
 @ExperimentalCoilApi
 @Composable
 fun ArticleCard(
-    articleRowData: ArticleRowData,
+    articleCardData: ArticleCardData,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -47,8 +43,8 @@ fun ArticleCard(
                 .weight(2.5f)
         ) {
             Text(
-                text = articleRowData.title,
-                style = MaterialTheme.typography.h1,
+                text = articleCardData.title,
+                style = MaterialTheme.typography.h2,
                 textAlign = TextAlign.Left,
                 modifier = Modifier
                     .padding(bottom = 10.dp)
@@ -57,21 +53,21 @@ fun ArticleCard(
             )
 
             Text(
-                text = stringResource(R.string.article_card_published_line) + articleRowData.publishedDate,
+                text = stringResource(R.string.article_card_published_line) + articleCardData.publishedDate,
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier
                     .padding(bottom = 20.dp)
                     .fillMaxWidth()
             )
 
-            FacetsLazyRow(facets = articleRowData.descriptors)
+            FacetsLazyRow(facets = articleCardData.descriptors)
 
         }
 
         Image(
-            painter = articleRowData.media?.let {
+            painter = articleCardData.media?.let {
                 rememberImagePainter(
-                    data = articleRowData.media.url,
+                    data = articleCardData.media.url,
                     builder = {
                         placeholder(R.drawable.loading_animation)
                         transformations(CircleCropTransformation())
@@ -95,7 +91,7 @@ fun ArticleCard(
 fun ArticleCardPreview() {
     NYTimesTheme {
         ArticleCard(
-            articleRowData = ArticleRowData(
+            articleCardData = ArticleCardData(
                 id = "",
                 publishedDate = "March, 14 2022",
                 section = "World",
@@ -110,3 +106,13 @@ fun ArticleCardPreview() {
         )
     }
 }
+
+
+data class ArticleCardData(
+    val id: String,
+    val publishedDate: String,
+    val section: String,
+    val title: String,
+    val descriptors: List<String>,
+    val media: MediaDataForUI?
+)

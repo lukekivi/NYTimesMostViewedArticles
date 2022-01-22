@@ -12,14 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.datatypes.ArticleRowDataResponse
 import com.nytimesmostviewedarticles.ui.components.ArticleCard
+import com.nytimesmostviewedarticles.ui.components.ArticleCardData
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.nytimesmostviewedarticles.ui.components.SectionsLazyRow
 import com.nytimesmostviewedarticles.viewmodel.MainScreenViewModelImpl
@@ -30,7 +28,7 @@ fun MainScreen(
     mainScreenViewModel: MainScreenViewModelImpl = hiltViewModel(),
     onNavClick: (String) -> Unit
 ) {
-    val articleData by mainScreenViewModel.articles.collectAsState(ArticleRowDataResponse.Loading)
+    val mainScreenData by mainScreenViewModel.articles.collectAsState(MainScreenData.Loading)
 
     Scaffold(
         topBar = { NyTimesTopBar() }
@@ -50,7 +48,7 @@ fun MainScreen(
             )
 
             MainScreenPrimaryData(
-                articleData = articleData,
+                mainScreenData = mainScreenData,
                 onNavClick = onNavClick
             )
         }
@@ -60,38 +58,38 @@ fun MainScreen(
 @ExperimentalCoilApi
 @Composable
 fun MainScreenPrimaryData(
-    articleData: ArticleRowDataResponse,
+    mainScreenData: MainScreenData,
     onNavClick: (String) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        when (articleData) {
-            is ArticleRowDataResponse.Loading -> {
+        when (mainScreenData) {
+            is MainScreenData.Loading -> {
                 CircularProgressIndicator(color = colorResource(id = R.color.black))
             }
 
-            is ArticleRowDataResponse.Error -> {
+            is MainScreenData.Error -> {
                 Text(
-                    text = articleData.message,
+                    text = mainScreenData.message,
                     style = MaterialTheme.typography.h6
                 )
             }
 
-            is ArticleRowDataResponse.Empty -> {
+            is MainScreenData.Empty -> {
                 Text(
                     text = stringResource(R.string.main_screen_empty_data),
                     style = MaterialTheme.typography.h6
                 )
             }
 
-            is ArticleRowDataResponse.Success -> {
+            is MainScreenData.Success -> {
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(articleData.articleRowDataList) { data ->
-                        ArticleCard(articleRowData = data, onClick = { onNavClick(data.id) })
+                    items(mainScreenData.articleRowDataList) { data ->
+                        ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
 
                         Divider(
                             color = MaterialTheme.colors.secondary,
@@ -104,4 +102,11 @@ fun MainScreenPrimaryData(
             }
         }
     }
+}
+
+sealed class MainScreenData {
+    object Loading: MainScreenData()
+    object Empty: MainScreenData()
+    class Success(val articleRowDataList: List<ArticleCardData>): MainScreenData()
+    class Error(val message: String): MainScreenData()
 }

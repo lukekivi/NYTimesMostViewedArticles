@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
@@ -44,7 +45,7 @@ fun DetailScreen(
     detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
     onNavClick: () -> Unit
 ) {
-    val articleDetailResponse by detailsScreenViewModel.getArticleDetail.collectAsState(ArticleDataResponse.Loading)
+    val detailScreenData by detailsScreenViewModel.getArticleDetail.collectAsState(DetailScreenData.Loading)
 
     Scaffold(
         topBar = {
@@ -57,7 +58,7 @@ fun DetailScreen(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier.fillMaxSize()
         ) {
-            DetailScreenContent(articleDataResponse = articleDetailResponse)
+            DetailScreenContent(detailScreenData = detailScreenData)
         }
     }
 }
@@ -66,18 +67,18 @@ fun DetailScreen(
 @ExperimentalCoilApi
 @Composable
 fun DetailScreenContent(
-    articleDataResponse: ArticleDataResponse
+    detailScreenData: DetailScreenData
 ) {
-    when (articleDataResponse) {
+    when (detailScreenData) {
 
-        is ArticleDataResponse.Loading -> {
+        is DetailScreenData.Loading -> {
             CircularProgressIndicator(
                 color = MaterialTheme.colors.secondary,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
 
-        is ArticleDataResponse.NoMatch -> {
+        is DetailScreenData.NoMatch -> {
             Text(
                 text = stringResource(R.string.detail_screen_no_match),
                 style = MaterialTheme.typography.h6,
@@ -85,16 +86,16 @@ fun DetailScreenContent(
             )
         }
 
-        is ArticleDataResponse.Error -> {
+        is DetailScreenData.Error -> {
             Text(
-                text = articleDataResponse.message,
+                text = detailScreenData.message,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
 
-        is ArticleDataResponse.Success -> {
-            val articleData = articleDataResponse.articleData
+        is DetailScreenData.Success -> {
+            val articleData = detailScreenData.articleData
 
             LazyColumn(
                 verticalArrangement = Arrangement.Top,
@@ -288,4 +289,12 @@ fun BackButtonIcon(
             contentDescription = null
         )
     }
+}
+
+
+sealed class DetailScreenData {
+    object Loading: DetailScreenData()
+    object NoMatch: DetailScreenData()
+    class Success(val articleData: ArticleData): DetailScreenData()
+    class Error(val message: String): DetailScreenData()
 }

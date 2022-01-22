@@ -1,8 +1,11 @@
 package com.nytimesmostviewedarticles.network
 
 import com.nytimesmostviewedarticles.datatypes.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,142 +18,72 @@ private const val MEDIA_TYPE_OF_CONCERN = "image"
 private const val DEFAULT_ERROR_MESSAGE = "Unknown error has occurred"
 
 interface NyTimesRepository {
-    fun getArticleDataForRows(): Flow<ArticleRowDataResponse>
-    fun getArticleDetailedDataResponse(id: String): Flow<ArticleDataResponse>
+    val articleDataResponse: StateFlow<ArticleDataResponse>
+    fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse>
+    fun updateArticleData()
 }
 
 @Singleton
-class NyTimesRepositoryImpl @Inject constructor(
-    private val nyTimesApiService: NyTimesApiService
+class NyTimesRepositoryImpl
+@Inject constructor(
+    private val nyTimesApiService: NyTimesApiService,
+    private val externalScope: CoroutineScope,
+    private val dispatcher: CoroutineDispatcher
 ) : NyTimesRepository {
-    private var cachedArticleData: CachedArticleData = CachedArticleData.NoRequest
+    private val _articleDataResponse =
+        MutableStateFlow<ArticleDataResponse>(ArticleDataResponse.Uninitialized)
+    override val articleDataResponse: StateFlow<ArticleDataResponse> = _articleDataResponse
 
-    override fun getArticleDataForRows() = flow {
-        var articleDataList: List<ArticleData>? = null
+    override fun updateArticleData() {
+        externalScope.launch(dispatcher) {
+            try {
+                _articleDataResponse.emit(ArticleDataResponse.Loading)
 
-        cachedArticleData.let { response ->
-            when (response) {
-
-                is CachedArticleData.NoRequest -> {
-                    emit(ArticleRowDataResponse.Loading)
-                    val data = getArticleData()
-
-                    if (data.isEmpty()) {
-                        cachedArticleData = CachedArticleData.Empty
-                        emit(ArticleRowDataResponse.Empty)
-                    } else {
-                        cachedArticleData = CachedArticleData.Success(data)
-                        articleDataList = data
-                    }
-                }
-
-                is CachedArticleData.Success -> {
-                    articleDataList = response.articleDataList
-                }
-
-                is CachedArticleData.Empty -> {
-                    emit(ArticleRowDataResponse.Empty)
-                }
-
-                is CachedArticleData.Error -> {
-                    emit(ArticleRowDataResponse.Error(response.message))
-                }
-            }
-        }
-
-        // Emit data if request was successful
-        articleDataList?.let { dataList ->
-            emit(
-                ArticleRowDataResponse.Success(
-                    dataList.map { it.toArticleDataForRow() }
+                _articleDataResponse.emit(
+                    ArticleDataResponse.Success(
+                        nyTimesApiService
+                            .getArticlesFromLastWeek(API_KEY)
+                            .results
+                            .map { it.toArticleData() })
                 )
-            )
+
+            } catch (e: Exception) {
+                _articleDataResponse.emit(
+                    ArticleDataResponse.Error(
+                        e.message ?: DEFAULT_ERROR_MESSAGE
+                    )
+                )
+            }
         }
-    }.catch { e ->
-        cachedArticleData = CachedArticleData.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
+    }
 
-        emit(
-            ArticleRowDataResponse.Error(
-                e.message ?: DEFAULT_ERROR_MESSAGE
-            )
-        )
-    }.flowOn(Dispatchers.IO)
+    override fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse> {
+        // Refresh article data if need be
+        when (_articleDataResponse.value) {
+            is ArticleDataResponse.Error,
+            is ArticleDataResponse.Uninitialized -> updateArticleData()
+            is ArticleDataResponse.Loading,
+            is ArticleDataResponse.Success -> Unit
+        }
 
-
-    override fun getArticleDetailedDataResponse(id: String) = flow {
-        var articleDataList: List<ArticleData>? = null
-
-        cachedArticleData.let { response ->
-            when (response) {
-
-                is CachedArticleData.NoRequest -> {
-                    emit(ArticleDataResponse.Loading)
-                    val data = getArticleData()
-
-                    if (data.isEmpty()) {
-                        cachedArticleData = CachedArticleData.Empty
-                        articleDataList = emptyList()
-                    } else {
-                        cachedArticleData = CachedArticleData.Success(data)
-                        articleDataList = data
-                    }
+        // Return results mapped to SpecificDataResponse
+        return _articleDataResponse.map { articleDataResponse ->
+            when (articleDataResponse) {
+                is ArticleDataResponse.Success -> {
+                    articleDataResponse.articleDataList.firstOrNull { it.id == id }
+                        ?.let { SpecificArticleResponse.Success(it) }
+                        ?: SpecificArticleResponse.NoMatch
                 }
-
-                is CachedArticleData.Success -> {
-                    articleDataList = response.articleDataList
-                }
-
-                is CachedArticleData.Empty -> {
-                    articleDataList = emptyList()
-                }
-
-                is CachedArticleData.Error -> {
-                    emit(ArticleDataResponse.Error(response.message))
+                is ArticleDataResponse.Uninitialized,
+                is ArticleDataResponse.Loading -> SpecificArticleResponse.Loading
+                is ArticleDataResponse.Error -> {
+                    SpecificArticleResponse.Error(articleDataResponse.message)
                 }
             }
         }
+    }
 
-        /**
-         * articleDataList is non-null if request was successful.
-         * Elvis operator is hit if there was no match which includes
-         * an empty response from API.
-         */
-        articleDataList?.let { datalist ->
-            datalist.firstOrNull {
-                it.id == id
-            }?.let {
-                emit(ArticleDataResponse.Success(it))
-            } ?: emit(ArticleDataResponse.NoMatch)
-        }
-    }.catch { e ->
-        cachedArticleData = CachedArticleData.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
-
-        emit(
-            ArticleDataResponse.Error(
-                e.message ?: DEFAULT_ERROR_MESSAGE
-            )
-        )
-    }.flowOn(Dispatchers.IO)
-
-
-    private suspend fun getArticleData() = nyTimesApiService
-            .getArticlesFromLastWeek(API_KEY)
-            .results
-            .map { it.toArticleDetailedData() }
-
-
-
-    private fun ArticleData.toArticleDataForRow() = ArticleRowData(
-        id = id,
-        publishedDate = publishedDate,
-        section = section,
-        title = title,
-        descriptors = descriptors,
-        media = media
-    )
-
-
-    private fun ViewedArticle.toArticleDetailedData(): ArticleData {
+    private fun ViewedArticle.toArticleData(): ArticleData {
         val media = media
             .firstOrNull { it.type == MEDIA_TYPE_OF_CONCERN }
 

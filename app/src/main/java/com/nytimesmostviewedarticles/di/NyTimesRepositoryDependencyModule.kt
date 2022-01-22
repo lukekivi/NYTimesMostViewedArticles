@@ -7,12 +7,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 @InstallIn(SingletonComponent::class)
 @Module
-class NyTimesArticleServiceModule {
+class NyTimesRepositoryDependencyModule {
     @Provides
     fun providesNyTimesArticleService(): NyTimesApiService {
         val baseUrl = "https://api.nytimes.com/svc/mostpopular/v2/viewed/"
@@ -25,5 +26,16 @@ class NyTimesArticleServiceModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(baseUrl)
             .build().create(NyTimesApiService::class.java)
+    }
+
+    @DelicateCoroutinesApi
+    @Provides
+    fun providesExternAlScope(): CoroutineScope {
+        return GlobalScope
+    }
+
+    @Provides
+    fun providesDispatcher(): CoroutineDispatcher {
+        return Dispatchers.IO
     }
 }

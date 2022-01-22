@@ -1,31 +1,46 @@
 package com.nytimesmostviewedarticles.datatypes
 
 /**
- * Response model for repository caching.
- */
-sealed class CachedArticleData {
-    object NoRequest: CachedArticleData()
-    object Empty: CachedArticleData()
-    class Success(val articleDataList: List<ArticleData>): CachedArticleData()
-    class Error(val message: String): CachedArticleData()
-}
-
-/**
  * Response model for main screen article cards.
  */
-sealed class ArticleRowDataResponse {
-    object Loading: ArticleRowDataResponse()
-    object Empty: ArticleRowDataResponse()
-    class Success(val articleRowDataList: List<ArticleRowData>): ArticleRowDataResponse()
-    class Error(val message: String): ArticleRowDataResponse()
+sealed class SpecificArticleResponse {
+    object Loading: SpecificArticleResponse()
+    object NoMatch: SpecificArticleResponse()
+    class Success(val articleData: ArticleData): SpecificArticleResponse()
+    class Error(val message: String): SpecificArticleResponse()
 }
 
 /**
  * Response model for detail screen.
  */
 sealed class ArticleDataResponse {
+    object Uninitialized: ArticleDataResponse()
     object Loading: ArticleDataResponse()
-    object NoMatch: ArticleDataResponse()
-    class Success(val articleData: ArticleData): ArticleDataResponse()
+    class Success(val articleDataList: List<ArticleData>): ArticleDataResponse()
     class Error(val message: String): ArticleDataResponse()
 }
+
+/**
+ * Data that the app is concerned with.
+ */
+data class ArticleData(
+    val id: String,
+    val url: String,
+    val publishedDate: String,
+    val section: String,
+    val updated: String,
+    val byline: String,
+    val title: String,
+    val abstract: String,
+    val descriptors: List<String>,
+    val geographyFacets: List<String>,
+    val media: MediaDataForUI?
+)
+
+/**
+ * Media data needed to generate an image.
+ */
+data class MediaDataForUI(
+    val url: String,
+    val caption: String
+)
