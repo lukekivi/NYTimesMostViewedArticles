@@ -1,6 +1,7 @@
 package com.nytimesmostviewedarticles.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -22,15 +23,11 @@ fun NyTimesTopBar(
         title = {
             Text(
                 text = stringResource(R.string.app_bar_title),
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
-                textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.black),
+                style = MaterialTheme.typography.h1,
                 modifier = modifier.fillMaxWidth()
             )
         },
         navigationIcon = navigationIcon,
-        backgroundColor = colorResource(id = R.color.white)
+        backgroundColor = MaterialTheme.colors.background
     )
 }
