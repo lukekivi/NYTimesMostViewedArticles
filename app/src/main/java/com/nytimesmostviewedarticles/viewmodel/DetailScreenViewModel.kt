@@ -1,5 +1,6 @@
 package com.nytimesmostviewedarticles.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
@@ -8,16 +9,17 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 interface DetailScreenViewModel {
-    fun getArticleDetail(id: String?): Flow<ArticleDataResponse>
+    val getArticleDetail: Flow<ArticleDataResponse>
 }
 
 @HiltViewModel
 class DetailScreenViewModelImpl @Inject constructor(
-    private val nyTimesRepository: NyTimesRepository
+    private val nyTimesRepository: NyTimesRepository,
+    savedStateHandle: SavedStateHandle
 ): DetailScreenViewModel, ViewModel() {
-    override fun getArticleDetail(id: String?) =
-        id?.let {
-            nyTimesRepository.getArticleDetailedDataResponse(id)
+    override val getArticleDetail =
+        savedStateHandle.get<String>("id")?.let { articleId ->
+            nyTimesRepository.getArticleDetailedDataResponse(articleId)
         } ?: flow {
             ArticleDataResponse.Error("Error passing data between screens: null id.")
         }

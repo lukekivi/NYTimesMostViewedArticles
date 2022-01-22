@@ -42,10 +42,9 @@ import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
 @Composable
 fun DetailScreen(
     detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
-    articleId: String?,
     onNavClick: () -> Unit
 ) {
-    val articleDetailResponse by detailsScreenViewModel.getArticleDetail(articleId).collectAsState(ArticleDataResponse.Loading)
+    val articleDetailResponse by detailsScreenViewModel.getArticleDetail.collectAsState(ArticleDataResponse.Loading)
 
     Scaffold(
         topBar = {

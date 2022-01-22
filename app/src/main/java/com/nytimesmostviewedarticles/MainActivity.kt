@@ -10,6 +10,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -59,11 +61,11 @@ class MainActivity : ComponentActivity() {
 
             composable(
                 route = Destinations.DetailScreen.route,
+                arguments = listOf(navArgument("id") { type = NavType.StringType }),
                 enterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) },
                 exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }) }
-            ) { backStackEntry ->
+            ) {
                 DetailScreen(
-                    articleId = backStackEntry.arguments?.getString("id"),
                     onNavClick = { navController.popBackStack() }
                 )
             }
