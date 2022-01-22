@@ -2,18 +2,17 @@
 This app displays details about NY Times most viewed articles from the past few days. Users can select articles they are interested in and view more details. In order to view the full article the user can click the "Read More" hyperlink in the DetailsScreen.
 
 ## Setup
-- Download `git clone https://github.com/lukekivi/NYTimesMostViewedArticles.git` or just download zip from git.
+- Run `git clone https://github.com/lukekivi/NYTimesMostViewedArticles.git` or just download zip from git.
 - Install onto your device
 - Run.
 
 ## New York Times Most Viewed Articles API
 The time period options offered by the [API][1] are:
-|       App Enum Name        | Interval | Used |
-| -------------------------- | -------- | ---- |
-| NyTimesArticlePeriod.DAY   | 1 day    | No   |
-| NyTimesArticlePeriod.WEEK  | 7 days   | Yes  |
-| NyTimesArticlePeriod.MONTH | 30 days  | No   |
-Will consider adding a period selector in the future.
+| Interval | Used |
+| -------- | ---- |
+| 1 day    | No   |
+| 7 days   | Yes  |
+| 30 days  | No   |
 \
 \
 The queried article data includes media. This app is only concerned with exposing images and there are three sizes:
@@ -33,6 +32,14 @@ The queried article data includes media. This app is only concerned with exposin
 |   Image Loading      |              Coil                  |
 | Dependency Injection |              Hilt                  |
 | Asynchronous Ops     |           Coroutines               |
+
+## Future Changes
+- Right now if network connection is unavailable the error message from retrofit is displayed. In the future I would like to more gracefully handle loss of internet by:
+    - adding Room persistence for a local backup of data acquired from the API and
+    - monitoring network connection in app in order to alert users of a loss of connection.
+- Add sort functionality to section row on top of the main screen.
+- Add a period selector.
+- If the API supplied more articles allowing the user to sort based on clicking the article detail bubbles would be cool. With 15 articles it would be mostly useless. 
 
 ## Links
 - [Git](https://github.com/lukekivi/NYTimesMostViewedArticles)

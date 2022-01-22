@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="article_card_row_height">225dp</dimen>
+    <dimen name="article_card_image_width">252dp</dimen>
+    <dimen name="article_card_image_height">168dp</dimen>
+    <dimen name="detail_screen_image_width">440dp</dimen>
+    <dimen name="detail_screen_image_height">293dp</dimen>
+</resources>
