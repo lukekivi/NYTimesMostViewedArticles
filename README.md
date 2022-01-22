@@ -13,7 +13,6 @@ The time period options offered by the [API][1] are:
 | 1 day    | No   |
 | 7 days   | Yes  |
 | 30 days  | No   |
-Will consider adding a period selector in the future.
 \
 \
 The queried article data includes media. This app is only concerned with exposing images and there are three sizes:
@@ -35,8 +34,12 @@ The queried article data includes media. This app is only concerned with exposin
 | Asynchronous Ops     |           Coroutines               |
 
 ## Future Changes
+- Right now if network connection is unavailable the error message from retrofit is displayed. In the future I would like to more gracefully handle loss of internet by:
+    - adding Room persistence for a local backup of data acquired from the API and
+    - monitoring network connection in app in order to alert users of a loss of connection.
 - Add sort functionality to section row on top of the main screen.
-- Add Room persistence for a local backup of data acquired from the API.
+- Add a period selector.
+- If the API supplied more articles allowing the user to sort based on clicking the article detail bubbles would be cool. With 15 articles it would be mostly useless. 
 
 ## Links
 - [Git](https://github.com/lukekivi/NYTimesMostViewedArticles)
