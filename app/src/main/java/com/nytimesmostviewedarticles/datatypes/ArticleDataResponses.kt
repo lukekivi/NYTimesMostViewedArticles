@@ -3,11 +3,11 @@ package com.nytimesmostviewedarticles.datatypes
 /**
  * Response model for repository caching.
  */
-sealed class CachedArticleResponse {
-    object NoRequest: CachedArticleResponse()
-    object Empty: CachedArticleResponse()
-    class Success(val articleDataList: List<ArticleData>): CachedArticleResponse()
-    class Error(val message: String): CachedArticleResponse()
+sealed class CachedArticleData {
+    object NoRequest: CachedArticleData()
+    object Empty: CachedArticleData()
+    class Success(val articleDataList: List<ArticleData>): CachedArticleData()
+    class Error(val message: String): CachedArticleData()
 }
 
 /**

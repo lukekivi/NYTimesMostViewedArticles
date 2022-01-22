@@ -23,36 +23,36 @@ interface NyTimesRepository {
 class NyTimesRepositoryImpl @Inject constructor(
     private val nyTimesApiService: NyTimesApiService
 ) : NyTimesRepository {
-    private var cachedArticleResponse: CachedArticleResponse = CachedArticleResponse.NoRequest
+    private var cachedArticleData: CachedArticleData = CachedArticleData.NoRequest
 
     override fun getArticleDataForRows() = flow {
         var articleDataList: List<ArticleData>? = null
 
-        cachedArticleResponse.let { response ->
+        cachedArticleData.let { response ->
             when (response) {
 
-                is CachedArticleResponse.NoRequest -> {
+                is CachedArticleData.NoRequest -> {
                     emit(ArticleRowDataResponse.Loading)
                     val data = getArticleData()
 
                     if (data.isEmpty()) {
-                        cachedArticleResponse = CachedArticleResponse.Empty
+                        cachedArticleData = CachedArticleData.Empty
                         emit(ArticleRowDataResponse.Empty)
                     } else {
-                        cachedArticleResponse = CachedArticleResponse.Success(data)
+                        cachedArticleData = CachedArticleData.Success(data)
                         articleDataList = data
                     }
                 }
 
-                is CachedArticleResponse.Success -> {
+                is CachedArticleData.Success -> {
                     articleDataList = response.articleDataList
                 }
 
-                is CachedArticleResponse.Empty -> {
+                is CachedArticleData.Empty -> {
                     emit(ArticleRowDataResponse.Empty)
                 }
 
-                is CachedArticleResponse.Error -> {
+                is CachedArticleData.Error -> {
                     emit(ArticleRowDataResponse.Error(response.message))
                 }
             }
@@ -67,7 +67,7 @@ class NyTimesRepositoryImpl @Inject constructor(
             )
         }
     }.catch { e ->
-        cachedArticleResponse = CachedArticleResponse.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
+        cachedArticleData = CachedArticleData.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
 
         emit(
             ArticleRowDataResponse.Error(
@@ -80,31 +80,31 @@ class NyTimesRepositoryImpl @Inject constructor(
     override fun getArticleDetailedDataResponse(id: String) = flow {
         var articleDataList: List<ArticleData>? = null
 
-        cachedArticleResponse.let { response ->
+        cachedArticleData.let { response ->
             when (response) {
 
-                is CachedArticleResponse.NoRequest -> {
+                is CachedArticleData.NoRequest -> {
                     emit(ArticleDataResponse.Loading)
                     val data = getArticleData()
 
                     if (data.isEmpty()) {
-                        cachedArticleResponse = CachedArticleResponse.Empty
+                        cachedArticleData = CachedArticleData.Empty
                         articleDataList = emptyList()
                     } else {
-                        cachedArticleResponse = CachedArticleResponse.Success(data)
+                        cachedArticleData = CachedArticleData.Success(data)
                         articleDataList = data
                     }
                 }
 
-                is CachedArticleResponse.Success -> {
+                is CachedArticleData.Success -> {
                     articleDataList = response.articleDataList
                 }
 
-                is CachedArticleResponse.Empty -> {
+                is CachedArticleData.Empty -> {
                     articleDataList = emptyList()
                 }
 
-                is CachedArticleResponse.Error -> {
+                is CachedArticleData.Error -> {
                     emit(ArticleDataResponse.Error(response.message))
                 }
             }
@@ -123,7 +123,7 @@ class NyTimesRepositoryImpl @Inject constructor(
             } ?: emit(ArticleDataResponse.NoMatch)
         }
     }.catch { e ->
-        cachedArticleResponse = CachedArticleResponse.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
+        cachedArticleData = CachedArticleData.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
 
         emit(
             ArticleDataResponse.Error(
