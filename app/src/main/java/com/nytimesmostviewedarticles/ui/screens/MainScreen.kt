@@ -95,7 +95,7 @@ fun MainScreenPrimaryData(
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(articleData.articleRowData) { data ->
+                    items(articleData.articleRowDataList) { data ->
                         ArticleCard(articleRowData = data, onClick = { onNavClick(data.id) })
 
                         Divider(

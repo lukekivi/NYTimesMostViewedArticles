@@ -1,12 +1,22 @@
 package com.nytimesmostviewedarticles.datatypes
 
 /**
+ * Response model for repository caching.
+ */
+sealed class CachedArticleResponse {
+    object NoRequest: CachedArticleResponse()
+    object Empty: CachedArticleResponse()
+    class Success(val articleDataList: List<ArticleData>): CachedArticleResponse()
+    class Error(val message: String): CachedArticleResponse()
+}
+
+/**
  * Response model for main screen article cards.
  */
 sealed class ArticleRowDataResponse {
     object Loading: ArticleRowDataResponse()
     object Empty: ArticleRowDataResponse()
-    class Success(val articleRowData: List<ArticleRowData>): ArticleRowDataResponse()
+    class Success(val articleRowDataList: List<ArticleRowData>): ArticleRowDataResponse()
     class Error(val message: String): ArticleRowDataResponse()
 }
 

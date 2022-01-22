@@ -12,6 +12,8 @@ private const val API_KEY = "nKLx7rAx32IP9qsHdVcachu1zsGEcWu7"
 // We only want "image" media from the API
 private const val MEDIA_TYPE_OF_CONCERN = "image"
 
+private const val DEFAULT_ERROR_MESSAGE = "Unknown error has occurred"
+
 interface NyTimesRepository {
     fun getArticleDataForRows(): Flow<ArticleRowDataResponse>
     fun getArticleDetailedDataResponse(id: String): Flow<ArticleDataResponse>
@@ -21,60 +23,121 @@ interface NyTimesRepository {
 class NyTimesRepositoryImpl @Inject constructor(
     private val nyTimesApiService: NyTimesApiService
 ) : NyTimesRepository {
-    private var articleData: List<ArticleData>? = null
+    private var cachedArticleResponse: CachedArticleResponse = CachedArticleResponse.NoRequest
 
     override fun getArticleDataForRows() = flow {
-        if (articleData == null) {
-            emit(ArticleRowDataResponse.Loading)
-            updateArticleDetailedData()
+        var articleDataList: List<ArticleData>? = null
+
+        cachedArticleResponse.let { response ->
+            when (response) {
+
+                is CachedArticleResponse.NoRequest -> {
+                    emit(ArticleRowDataResponse.Loading)
+                    val data = getArticleData()
+
+                    if (data.isEmpty()) {
+                        cachedArticleResponse = CachedArticleResponse.Empty
+                        emit(ArticleRowDataResponse.Empty)
+                    } else {
+                        cachedArticleResponse = CachedArticleResponse.Success(data)
+                        articleDataList = data
+                    }
+                }
+
+                is CachedArticleResponse.Success -> {
+                    articleDataList = response.articleDataList
+                }
+
+                is CachedArticleResponse.Empty -> {
+                    emit(ArticleRowDataResponse.Empty)
+                }
+
+                is CachedArticleResponse.Error -> {
+                    emit(ArticleRowDataResponse.Error(response.message))
+                }
+            }
         }
 
-        if (articleData!!.isEmpty()) {
-            emit(ArticleRowDataResponse.Empty)
-        } else {
+        // Emit data if request was successful
+        articleDataList?.let { dataList ->
             emit(
                 ArticleRowDataResponse.Success(
-                    articleRowData = articleData!!.map { it.toArticleDataForRow() }
+                    dataList.map { it.toArticleDataForRow() }
                 )
             )
         }
     }.catch { e ->
-        articleData = listOf()
+        cachedArticleResponse = CachedArticleResponse.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
+
         emit(
             ArticleRowDataResponse.Error(
-                e.message ?: "Unknown error has occurred"
+                e.message ?: DEFAULT_ERROR_MESSAGE
             )
         )
     }.flowOn(Dispatchers.IO)
 
 
     override fun getArticleDetailedDataResponse(id: String) = flow {
-        if (articleData == null) {
-            emit(ArticleDataResponse.Loading)
-            updateArticleDetailedData()
+        var articleDataList: List<ArticleData>? = null
+
+        cachedArticleResponse.let { response ->
+            when (response) {
+
+                is CachedArticleResponse.NoRequest -> {
+                    emit(ArticleDataResponse.Loading)
+                    val data = getArticleData()
+
+                    if (data.isEmpty()) {
+                        cachedArticleResponse = CachedArticleResponse.Empty
+                        articleDataList = emptyList()
+                    } else {
+                        cachedArticleResponse = CachedArticleResponse.Success(data)
+                        articleDataList = data
+                    }
+                }
+
+                is CachedArticleResponse.Success -> {
+                    articleDataList = response.articleDataList
+                }
+
+                is CachedArticleResponse.Empty -> {
+                    articleDataList = emptyList()
+                }
+
+                is CachedArticleResponse.Error -> {
+                    emit(ArticleDataResponse.Error(response.message))
+                }
+            }
         }
 
-        emit(
-            articleData!!.firstOrNull { it.id == id }?.let {
-                ArticleDataResponse.Success(articleData = it)
-            } ?: ArticleDataResponse.NoMatch
-        )
-    }.catch {
-        articleData = listOf()
+        /**
+         * articleDataList is non-null if request was successful.
+         * Elvis operator is hit if there was no match which includes
+         * an empty response from API.
+         */
+        articleDataList?.let { datalist ->
+            datalist.firstOrNull {
+                it.id == id
+            }?.let {
+                emit(ArticleDataResponse.Success(it))
+            } ?: emit(ArticleDataResponse.NoMatch)
+        }
+    }.catch { e ->
+        cachedArticleResponse = CachedArticleResponse.Error(e.message ?: DEFAULT_ERROR_MESSAGE)
+
         emit(
             ArticleDataResponse.Error(
-                message = it.message ?: "Unknown error has occurred"
+                e.message ?: DEFAULT_ERROR_MESSAGE
             )
         )
     }.flowOn(Dispatchers.IO)
 
 
-    private suspend fun updateArticleDetailedData() {
-        articleData = nyTimesApiService
+    private suspend fun getArticleData() = nyTimesApiService
             .getArticlesFromLastWeek(API_KEY)
             .results
             .map { it.toArticleDetailedData() }
-    }
+
 
 
     private fun ArticleData.toArticleDataForRow() = ArticleRowData(
