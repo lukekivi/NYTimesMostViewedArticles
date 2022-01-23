@@ -34,6 +34,8 @@ import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
 
+private const val ANNOTATION_TAG = "URL"
+
 @ExperimentalCoilApi
 @Composable
 fun DetailScreen(
@@ -95,7 +97,8 @@ fun DetailScreenContent(
             LazyColumn(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 item {
 
@@ -164,7 +167,8 @@ fun DetailScreenContent(
 
                     HyperlinkedText(
                         url = articleData.url,
-                        text = stringResource(R.string.detail_screen_read_more)
+                        text = stringResource(R.string.detail_screen_read_more),
+                        modifier = Modifier.padding(bottom = 30.dp)
                     )
                 }
             }
@@ -236,13 +240,14 @@ fun TitledFacetLazyRow(
 fun HyperlinkedText(
     url: String,
     text: String,
+    modifier: Modifier
 ) {
     val annotatedLinkString: AnnotatedString = buildAnnotatedString {
         append(text)
 
         // attach a string annotation that stores a URL to the text "link"
         addStringAnnotation(
-            tag = "URL",
+            tag = ANNOTATION_TAG,
             annotation = url,
             start = 0,
             end = text.length
@@ -256,14 +261,15 @@ fun HyperlinkedText(
     ClickableText(
         text = annotatedLinkString,
         style = TextStyle(
-            color = Color.Blue,
+            color = MaterialTheme.colors.secondaryVariant,
             fontSize = 18.sp,
             fontFamily = FontFamily.Serif,
-            textDecoration = TextDecoration.Underline
+            textDecoration = TextDecoration.Underline,
         ),
+        modifier = modifier,
         onClick = {
             annotatedLinkString
-                .getStringAnnotations("URL", it, it)
+                .getStringAnnotations(ANNOTATION_TAG, it, it)
                 .firstOrNull()?.let { stringAnnotation ->
                     uriHandler.openUri(stringAnnotation.item)
                 }
