@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,10 +16,8 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.ui.components.ArticleCard
-import com.nytimesmostviewedarticles.ui.components.ArticleCardData
-import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
-import com.nytimesmostviewedarticles.ui.components.SectionsLazyRow
+import com.nytimesmostviewedarticles.ui.components.*
+import com.nytimesmostviewedarticles.viewmodel.FilterOptions
 import com.nytimesmostviewedarticles.viewmodel.MainScreenViewModelImpl
 
 @ExperimentalCoilApi
@@ -29,10 +26,10 @@ fun MainScreen(
     mainScreenViewModel: MainScreenViewModelImpl = hiltViewModel(),
     onNavClick: (String) -> Unit
 ) {
-    val mainScreenData by mainScreenViewModel.articles.collectAsState(MainScreenData.Loading)
+    val mainScreenContent by mainScreenViewModel.mainScreenContent.collectAsState(DEFAULT_MAIN_SCREEN_CONTENT)
 
     SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = mainScreenData is MainScreenData.Loading),
+        state = rememberSwipeRefreshState(isRefreshing = mainScreenContent.mainScreenData is MainScreenData.Loading),
         onRefresh = { mainScreenViewModel.updateArticles() },
         indicatorPadding = PaddingValues(top = 200.dp)
     ) {
@@ -46,8 +43,8 @@ fun MainScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                SectionsLazyRow(
-                    sectionNames = stringArrayResource(id = R.array.section_names),
+                FilterItemLazyRow(
+                    filterItems = mainScreenContent.filterItemList,
                     onSelected = { mainScreenViewModel.updateFilter(it) }
                 )
 
@@ -57,7 +54,7 @@ fun MainScreen(
                 )
 
                 MainScreenCoreContent(
-                    mainScreenData = mainScreenData,
+                    mainScreenData = mainScreenContent.mainScreenData,
                     onNavClick = onNavClick
                 )
             }
@@ -111,7 +108,15 @@ fun MainScreenCoreContent(
     }
 }
 
+private val DEFAULT_MAIN_SCREEN_CONTENT = MainScreenContent(
+    filterItemList = listOf(),
+    mainScreenData = MainScreenData.Loading
+)
 
+data class MainScreenContent(
+    val filterItemList: List<FilterItem>,
+    val mainScreenData: MainScreenData
+)
 
 sealed class MainScreenData {
     object Loading : MainScreenData()
