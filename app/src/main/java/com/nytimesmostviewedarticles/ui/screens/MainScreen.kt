@@ -9,15 +9,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.ui.components.ArticleCard
@@ -59,7 +56,7 @@ fun MainScreen(
                     thickness = 1.dp
                 )
 
-                MainScreenPrimaryData(
+                MainScreenCoreContent(
                     mainScreenData = mainScreenData,
                     onNavClick = onNavClick
                 )
@@ -70,7 +67,7 @@ fun MainScreen(
 
 @ExperimentalCoilApi
 @Composable
-fun MainScreenPrimaryData(
+fun MainScreenCoreContent(
     mainScreenData: MainScreenData,
     onNavClick: (String) -> Unit
 ) {
@@ -113,6 +110,8 @@ fun MainScreenPrimaryData(
         }
     }
 }
+
+
 
 sealed class MainScreenData {
     object Loading : MainScreenData()
