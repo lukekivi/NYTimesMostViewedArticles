@@ -39,13 +39,16 @@ fun MainScreen(
         onRefresh = { mainScreenViewModel.updateArticles() },
         indicatorPadding = PaddingValues(top = 200.dp)
     ) {
+
         Scaffold(
             topBar = { NyTimesTopBar() }
         ) {
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
+
                 SectionsLazyRow(
                     sectionNames = stringArrayResource(id = R.array.section_names),
                     onSelected = { mainScreenViewModel.updateFilter(it) }
@@ -75,6 +78,7 @@ fun MainScreenPrimaryData(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
+
         when (mainScreenData) {
             is MainScreenData.Error -> {
                 Text(

@@ -27,6 +27,8 @@ sealed class Destinations(val route: String) {
         fun createRoute(id: String):String {
             return "DetailScreen/$id"
         }
+
+        const val argId = "id"
     }
 }
 
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
             composable(
                 route = Destinations.DetailScreen.route,
-                arguments = listOf(navArgument("id") { type = NavType.StringType }),
+                arguments = listOf(navArgument(Destinations.DetailScreen.argId) { type = NavType.StringType }),
                 enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }) },
                 exitTransition = { slideOutHorizontally(targetOffsetX = { 1000 }) }
             ) {
