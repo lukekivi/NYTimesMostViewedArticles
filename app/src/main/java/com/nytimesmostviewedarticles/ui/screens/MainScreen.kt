@@ -134,6 +134,10 @@ data class MainScreenContent(
 sealed class MainScreenData {
     object Loading : MainScreenData()
     object Empty : MainScreenData()
+
+    /**
+     * Valid, non-empty data is available to be displayed.
+     */
     class Success(val articleRowDataList: List<ArticleCardData>) : MainScreenData()
     class Error(val message: String) : MainScreenData()
 }

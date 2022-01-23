@@ -296,6 +296,10 @@ fun BackButtonIcon(
 sealed class DetailScreenData {
     object Loading: DetailScreenData()
     object NoMatch: DetailScreenData()
+
+    /**
+     * Valid data is available to be displayed.
+     */
     class Success(val articleData: ArticleData): DetailScreenData()
     class Error(val message: String): DetailScreenData()
 }

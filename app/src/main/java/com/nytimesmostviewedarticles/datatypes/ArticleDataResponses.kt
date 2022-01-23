@@ -1,21 +1,29 @@
 package com.nytimesmostviewedarticles.datatypes
 
 /**
- * Response model for main screen article cards.
+ * Response model for DetailScreen.
  */
 sealed class SpecificArticleResponse {
     object Loading: SpecificArticleResponse()
     object NoMatch: SpecificArticleResponse()
+
+    /**
+     * A match was found in the repo.
+     */
     class Success(val articleData: ArticleData): SpecificArticleResponse()
     class Error(val message: String): SpecificArticleResponse()
 }
 
 /**
- * Response model for detail screen.
+ * Response model for MainScreen ArticleCards.
  */
 sealed class ArticleDataResponse {
     object Uninitialized: ArticleDataResponse()
     object Loading: ArticleDataResponse()
+
+    /**
+     * Valid data is available.
+     */
     class Success(val articleDataList: List<ArticleData>): ArticleDataResponse()
     class Error(val message: String): ArticleDataResponse()
 }

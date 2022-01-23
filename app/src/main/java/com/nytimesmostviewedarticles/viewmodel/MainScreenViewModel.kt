@@ -18,7 +18,15 @@ import javax.inject.Inject
 
 interface MainScreenViewModel {
     val mainScreenContent: Flow<MainScreenContent>
+
+    /**
+     * Updates [mainScreenContent] with up to date article data.
+     */
     fun userRefreshArticles()
+
+    /**
+     * Update filter which is applied to [mainScreenContent] article data.
+     */
     fun userChangedFilter(filterOption: FilterOptions)
 }
 
@@ -116,9 +124,14 @@ class MainScreenViewModelImpl @Inject constructor(
 
     private sealed class ArticleFilter {
         object None: ArticleFilter()
+
+        /**
+         * [mainScreenContent] article data is filtered by [filterOption]
+         */
         class Active(val filterOption: FilterOptions): ArticleFilter()
     }
 }
+
 
 enum class FilterOptions(
     @StringRes val label: Int,

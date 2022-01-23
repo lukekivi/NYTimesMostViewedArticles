@@ -21,7 +21,15 @@ private const val DEFAULT_ERROR_MESSAGE = "Unknown error has occurred"
 
 interface NyTimesRepository {
     val articleDataResponse: StateFlow<ArticleDataResponse>
+
+    /**
+     * Get data about a specific article via it's [id]. If there is no data make an API call.
+     */
     fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse>
+
+    /**
+     * Get up to date article data from the the API.
+     */
     fun updateArticleData()
 }
 

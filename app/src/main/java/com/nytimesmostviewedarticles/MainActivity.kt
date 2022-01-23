@@ -23,6 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 sealed class Destinations(val route: String) {
     object MainScreen: Destinations("MainScreen")
     object DetailScreen: Destinations("DetailScreen/{id}") {
+        /**
+         * Pass article ID to DetailScreen.
+         */
         fun createRoute(id: String):String {
             return "DetailScreen/$id"
         }
