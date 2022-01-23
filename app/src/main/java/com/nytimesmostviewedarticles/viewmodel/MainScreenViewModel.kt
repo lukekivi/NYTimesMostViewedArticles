@@ -18,8 +18,8 @@ import javax.inject.Inject
 
 interface MainScreenViewModel {
     val mainScreenContent: Flow<MainScreenContent>
-    fun updateArticles()
-    fun updateFilter(filterOption: FilterOptions)
+    fun userRefreshArticles()
+    fun userChangedFilter(filterOption: FilterOptions)
 }
 
 @HiltViewModel
@@ -37,7 +37,7 @@ class MainScreenViewModelImpl @Inject constructor(
                 is ArticleDataResponse.Loading -> MainScreenData.Loading
                 is ArticleDataResponse.Error -> MainScreenData.Error(articleResponse.message)
                 is ArticleDataResponse.Uninitialized -> {
-                    updateArticles()
+                    userRefreshArticles()
                     MainScreenData.Loading
                 }
                 is ArticleDataResponse.Success -> {
@@ -53,7 +53,7 @@ class MainScreenViewModelImpl @Inject constructor(
             MainScreenContent(filterItemList, mainScreenData)
         }
 
-    override fun updateFilter(filterOption: FilterOptions) {
+    override fun userChangedFilter(filterOption: FilterOptions) {
         filter.value.let { curArticleFilter ->
 
             /**
@@ -101,7 +101,7 @@ class MainScreenViewModelImpl @Inject constructor(
             }
         }
 
-    override fun updateArticles() {
+    override fun userRefreshArticles() {
         nyTimesRepository.updateArticleData()
     }
 

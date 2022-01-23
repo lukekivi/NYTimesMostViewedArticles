@@ -34,7 +34,7 @@ fun MainScreen(
 
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = mainScreenContent.mainScreenData is MainScreenData.Loading),
-        onRefresh = { mainScreenViewModel.updateArticles() },
+        onRefresh = { mainScreenViewModel.userRefreshArticles() },
         indicatorPadding = PaddingValues(top = 200.dp)
     ) {
 
@@ -49,7 +49,7 @@ fun MainScreen(
 
                 FilterItemLazyRow(
                     filterItems = mainScreenContent.filterItemList,
-                    onSelected = { mainScreenViewModel.updateFilter(it) }
+                    onSelected = { mainScreenViewModel.userChangedFilter(it) }
                 )
 
                 Divider(
