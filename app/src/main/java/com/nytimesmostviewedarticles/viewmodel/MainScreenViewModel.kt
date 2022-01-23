@@ -15,22 +15,24 @@ import javax.inject.Inject
 
 interface MainScreenViewModel {
     val articles: Flow<MainScreenData>
+    fun updateArticles()
     fun updateFilter(sectionName: String)
 }
 
 @HiltViewModel
 class MainScreenViewModelImpl @Inject constructor(
-    nyTimesRepository: NyTimesRepository
+    private val nyTimesRepository: NyTimesRepository
 ) : ViewModel(), MainScreenViewModel {
+
     private var filter = MutableStateFlow<ArticleFilter>(ArticleFilter.None)
 
     override val articles: Flow<MainScreenData> = nyTimesRepository.articleDataResponse
-        .combine(filter) { articleResponse, filter ->
+        .combine(filter) { articleResponse, _ ->
         when (articleResponse) {
             is ArticleDataResponse.Loading -> MainScreenData.Loading
             is ArticleDataResponse.Error -> MainScreenData.Error(articleResponse.message)
             is ArticleDataResponse.Uninitialized -> {
-                nyTimesRepository.updateArticleData()
+                updateArticles()
                 MainScreenData.Loading
             }
             is ArticleDataResponse.Success -> {
@@ -44,7 +46,6 @@ class MainScreenViewModelImpl @Inject constructor(
             }
         }
     }
-
 
     override fun updateFilter(sectionName: String) {
         filter.value.let {
@@ -69,6 +70,10 @@ class MainScreenViewModelImpl @Inject constructor(
                     .filter { it.section == articleFilter.sectionName }
             }
         }
+
+    override fun updateArticles() {
+        nyTimesRepository.updateArticleData()
+    }
 
     private fun ArticleData.toArticleCardData() = ArticleCardData(
         id = id,

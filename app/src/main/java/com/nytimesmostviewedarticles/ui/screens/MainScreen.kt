@@ -15,6 +15,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.ui.components.ArticleCard
 import com.nytimesmostviewedarticles.ui.components.ArticleCardData
@@ -30,27 +34,33 @@ fun MainScreen(
 ) {
     val mainScreenData by mainScreenViewModel.articles.collectAsState(MainScreenData.Loading)
 
-    Scaffold(
-        topBar = { NyTimesTopBar() }
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = mainScreenData is MainScreenData.Loading),
+        onRefresh = { mainScreenViewModel.updateArticles() },
+        indicatorPadding = PaddingValues(top = 200.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+        Scaffold(
+            topBar = { NyTimesTopBar() }
         ) {
-            SectionsLazyRow(
-                sectionNames = stringArrayResource(id = R.array.section_names),
-                onSelected = { mainScreenViewModel.updateFilter(it) }
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SectionsLazyRow(
+                    sectionNames = stringArrayResource(id = R.array.section_names),
+                    onSelected = { mainScreenViewModel.updateFilter(it) }
+                )
 
-            Divider(
-                color = MaterialTheme.colors.secondary,
-                thickness = 1.dp
-            )
+                Divider(
+                    color = MaterialTheme.colors.secondary,
+                    thickness = 1.dp
+                )
 
-            MainScreenPrimaryData(
-                mainScreenData = mainScreenData,
-                onNavClick = onNavClick
-            )
+                MainScreenPrimaryData(
+                    mainScreenData = mainScreenData,
+                    onNavClick = onNavClick
+                )
+            }
         }
     }
 }
@@ -66,10 +76,6 @@ fun MainScreenPrimaryData(
         modifier = Modifier.fillMaxSize()
     ) {
         when (mainScreenData) {
-            is MainScreenData.Loading -> {
-                CircularProgressIndicator(color = colorResource(id = R.color.black))
-            }
-
             is MainScreenData.Error -> {
                 Text(
                     text = mainScreenData.message,
@@ -105,8 +111,8 @@ fun MainScreenPrimaryData(
 }
 
 sealed class MainScreenData {
-    object Loading: MainScreenData()
-    object Empty: MainScreenData()
-    class Success(val articleRowDataList: List<ArticleCardData>): MainScreenData()
-    class Error(val message: String): MainScreenData()
+    object Loading : MainScreenData()
+    object Empty : MainScreenData()
+    class Success(val articleRowDataList: List<ArticleCardData>) : MainScreenData()
+    class Error(val message: String) : MainScreenData()
 }
