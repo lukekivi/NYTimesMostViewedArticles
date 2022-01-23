@@ -49,7 +49,7 @@ fun MainScreen(
                 )
 
                 Divider(
-                    color = MaterialTheme.colors.secondary,
+                    color = MaterialTheme.colors.primaryVariant,
                     thickness = 1.dp
                 )
 
@@ -96,7 +96,7 @@ fun MainScreenCoreContent(
                         ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
 
                         Divider(
-                            color = MaterialTheme.colors.secondary,
+                            color = MaterialTheme.colors.primaryVariant,
                             modifier = Modifier
                                 .padding(start = 20.dp, end = 20.dp)
                                 .fillMaxWidth()

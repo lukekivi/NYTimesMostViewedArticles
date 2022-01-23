@@ -1,11 +1,13 @@
 package com.nytimesmostviewedarticles.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +32,13 @@ fun FilterItemLazyRow(
         itemsIndexed(filterItems) { index, filterItem ->
             Column(
                 modifier = modifier
+                    .background(
+                        color = if (filterItem.isSelected)
+                            MaterialTheme.colors.secondary
+                         else
+                             MaterialTheme.colors.background,
+                        shape = RoundedCornerShape(10.dp)
+                    )
                     .padding(start = 10.dp, end = 10.dp)
                     .clickable { onSelected(index) }
             ) {

@@ -73,7 +73,7 @@ fun DetailScreenContent(
 
         is DetailScreenData.Loading -> {
             CircularProgressIndicator(
-                color = MaterialTheme.colors.secondary,
+                color = MaterialTheme.colors.primaryVariant,
                 modifier = Modifier.padding(top = 30.dp)
             )
         }
@@ -113,7 +113,7 @@ fun DetailScreenContent(
                     )
 
                     Divider(
-                        color = MaterialTheme.colors.secondary,
+                        color = MaterialTheme.colors.primaryVariant,
                         thickness = 1.dp,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
@@ -160,7 +160,7 @@ fun DetailScreenContent(
                     )
 
                     Divider(
-                        color = MaterialTheme.colors.secondary,
+                        color = MaterialTheme.colors.primaryVariant,
                         thickness = 1.dp,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
