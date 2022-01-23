@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity() {
             composable(
                 route = Destinations.DetailScreen.route,
                 arguments = listOf(navArgument("id") { type = NavType.StringType }),
-                enterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) },
-                exitTransition = { slideOutHorizontally(targetOffsetX = { -1000 }) }
+                enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }) },
+                exitTransition = { slideOutHorizontally(targetOffsetX = { 1000 }) }
             ) {
                 DetailScreen(
                     onNavClick = { navController.popBackStack() }

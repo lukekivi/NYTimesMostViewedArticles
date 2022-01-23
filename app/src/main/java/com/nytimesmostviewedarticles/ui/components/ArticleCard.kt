@@ -2,10 +2,13 @@ package com.nytimesmostviewedarticles.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -34,6 +37,14 @@ fun ArticleCard(
         modifier = modifier
             .height(dimensionResource(id = R.dimen.article_card_row_height))
             .padding(start = 20.dp, end = 20.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    bounded = true,
+                    color = MaterialTheme.colors.primaryVariant
+                ),
+                onClick = { onClick() }
+            ),
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -49,7 +60,6 @@ fun ArticleCard(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
-                    .clickable { onClick() }
             )
 
             Text(
@@ -80,7 +90,6 @@ fun ArticleCard(
                     height = dimensionResource(id = R.dimen.article_card_image_height)
                 )
                 .weight(1f)
-                .clickable { onClick() }
         )
     }
 }
