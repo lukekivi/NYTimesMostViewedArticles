@@ -3,7 +3,7 @@ package com.nytimesmostviewedarticles.datatypes
 import com.squareup.moshi.Json
 
 
-data class NyTimesApiResults(
+data class NetworkResponse(
     @Json(name = "results") val results: List<ViewedArticle>
 )
 
