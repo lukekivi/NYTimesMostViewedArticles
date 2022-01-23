@@ -33,7 +33,7 @@ fun MainScreen(
     )
 
     SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = mainScreenContent.mainScreenData is MainScreenData.Loading),
+        state = rememberSwipeRefreshState(isRefreshing = mainScreenContent.isLoading),
         onRefresh = { mainScreenViewModel.userRefreshArticles() },
         indicatorPadding = PaddingValues(top = 200.dp)
     ) {
@@ -123,16 +123,17 @@ fun MainScreenCoreContent(
 
 private val DEFAULT_MAIN_SCREEN_CONTENT = MainScreenContent(
     filterItemList = listOf(),
-    mainScreenData = MainScreenData.Loading
+    mainScreenData = MainScreenData.Empty,
+    isLoading = false
 )
 
 data class MainScreenContent(
     val filterItemList: List<FilterItem>,
-    val mainScreenData: MainScreenData
+    val mainScreenData: MainScreenData,
+    val isLoading: Boolean
 )
 
 sealed class MainScreenData {
-    object Loading : MainScreenData()
     object Empty : MainScreenData()
 
     /**

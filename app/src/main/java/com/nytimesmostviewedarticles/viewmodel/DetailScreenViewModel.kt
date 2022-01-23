@@ -29,7 +29,6 @@ class DetailScreenViewModelImpl @Inject constructor(
             nyTimesRepository.getSpecificArticleData(articleId)
         }?.map {
             when (it) {
-                is SpecificArticleResponse.Loading -> DetailScreenData.Loading
                 is SpecificArticleResponse.NoMatch -> DetailScreenData.NoMatch
                 is SpecificArticleResponse.Error -> DetailScreenData.Error(it.message)
                 is SpecificArticleResponse.Success -> DetailScreenData.Success(it.articleData)

@@ -42,7 +42,7 @@ fun DetailScreen(
     detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
     onNavClick: () -> Unit
 ) {
-    val detailScreenData by detailsScreenViewModel.getArticleDetail.collectAsState(DetailScreenData.Loading)
+    val detailScreenData by detailsScreenViewModel.getArticleDetail.collectAsState(DetailScreenData.NoMatch)
 
     Scaffold(
         topBar = {
@@ -67,13 +67,6 @@ fun DetailScreenContent(
     detailScreenData: DetailScreenData
 ) {
     when (detailScreenData) {
-
-        is DetailScreenData.Loading -> {
-            CircularProgressIndicator(
-                color = MaterialTheme.colors.primaryVariant,
-                modifier = Modifier.padding(top = 30.dp)
-            )
-        }
 
         is DetailScreenData.NoMatch -> {
             Text(
@@ -294,7 +287,6 @@ fun BackButtonIcon(
 
 
 sealed class DetailScreenData {
-    object Loading: DetailScreenData()
     object NoMatch: DetailScreenData()
 
     /**

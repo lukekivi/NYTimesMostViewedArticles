@@ -39,16 +39,21 @@ class MainScreenViewModelImpl @Inject constructor(
 
     private var filter = MutableStateFlow<ArticleFilter>(ArticleFilter.None)
 
-    override val mainScreenContent: Flow<MainScreenContent> = nyTimesRepository.articleDataResponse
-        .combine(filter) { articleResponse, _ ->
-            val mainScreenData = when (articleResponse) {
-                is ArticleDataResponse.Loading -> MainScreenData.Loading
+    private var isLoading = MutableStateFlow<Boolean>(false)
+
+    override val mainScreenContent: Flow<MainScreenContent> = combine(
+        nyTimesRepository.articleDataResponse,
+        isLoading,
+        filter
+    ) { articleResponse, loading, _ ->
+         val mainScreenData = when (articleResponse) {
                 is ArticleDataResponse.Error -> MainScreenData.Error(articleResponse.message)
                 is ArticleDataResponse.Uninitialized -> {
                     userRefreshArticles()
-                    MainScreenData.Loading
+                    MainScreenData.Empty
                 }
                 is ArticleDataResponse.Success -> {
+                    isLoading.value = false
                     val filteredData = applyFilter(articleResponse.articleDataList.map { it.toArticleCardData() })
 
                     if (filteredData.isEmpty()) {
@@ -58,8 +63,15 @@ class MainScreenViewModelImpl @Inject constructor(
                     }
                 }
             }
-            MainScreenContent(filterItemList, mainScreenData)
+            MainScreenContent(filterItemList, mainScreenData, loading)
         }
+
+
+    override fun userRefreshArticles() {
+        isLoading.value = true
+        nyTimesRepository.updateArticleData()
+    }
+
 
     override fun userChangedFilter(filterOption: FilterOptions) {
         filter.value.let { curArticleFilter ->
@@ -91,6 +103,7 @@ class MainScreenViewModelImpl @Inject constructor(
         }
     }
 
+
     private fun updateFilterListItem(filterIndex: Int) {
         val filterItem = filterItemList[filterIndex]
 
@@ -99,6 +112,7 @@ class MainScreenViewModelImpl @Inject constructor(
             isSelected = !filterItem.isSelected
         )
     }
+
 
     private fun applyFilter(articleCardDataList: List<ArticleCardData>) =
         filter.value.let { articleFilter ->
@@ -109,9 +123,6 @@ class MainScreenViewModelImpl @Inject constructor(
             }
         }
 
-    override fun userRefreshArticles() {
-        nyTimesRepository.updateArticleData()
-    }
 
     private fun ArticleData.toArticleCardData() = ArticleCardData(
         id = id,
@@ -121,6 +132,7 @@ class MainScreenViewModelImpl @Inject constructor(
         descriptors = descriptors,
         media = media
     )
+
 
     private sealed class ArticleFilter {
         object None: ArticleFilter()

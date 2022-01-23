@@ -47,8 +47,6 @@ class NyTimesRepositoryImpl
     override fun updateArticleData() {
         externalScope.launch(dispatcher) {
             try {
-                _articleDataResponse.emit(ArticleDataResponse.Loading)
-
                 _articleDataResponse.emit(
                     ArticleDataResponse.Success(
                         nyTimesApiService
@@ -72,7 +70,6 @@ class NyTimesRepositoryImpl
         when (_articleDataResponse.value) {
             is ArticleDataResponse.Error,
             is ArticleDataResponse.Uninitialized -> updateArticleData()
-            is ArticleDataResponse.Loading,
             is ArticleDataResponse.Success -> Unit
         }
 
@@ -84,8 +81,7 @@ class NyTimesRepositoryImpl
                         ?.let { SpecificArticleResponse.Success(it) }
                         ?: SpecificArticleResponse.NoMatch
                 }
-                is ArticleDataResponse.Uninitialized,
-                is ArticleDataResponse.Loading -> SpecificArticleResponse.Loading
+                is ArticleDataResponse.Uninitialized -> SpecificArticleResponse.NoMatch
                 is ArticleDataResponse.Error -> {
                     SpecificArticleResponse.Error(articleDataResponse.message)
                 }

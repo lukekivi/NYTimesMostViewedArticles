@@ -4,7 +4,6 @@ package com.nytimesmostviewedarticles.datatypes
  * Response model for DetailScreen.
  */
 sealed class SpecificArticleResponse {
-    object Loading: SpecificArticleResponse()
     object NoMatch: SpecificArticleResponse()
 
     /**
@@ -19,7 +18,6 @@ sealed class SpecificArticleResponse {
  */
 sealed class ArticleDataResponse {
     object Uninitialized: ArticleDataResponse()
-    object Loading: ArticleDataResponse()
 
     /**
      * Valid data is available.
