@@ -9,7 +9,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi

@@ -2,18 +2,18 @@ package com.nytimesmostviewedarticles.viewmodel
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.components.ArticleCardData
+import com.nytimesmostviewedarticles.ui.components.FilterItem
+import com.nytimesmostviewedarticles.ui.screens.MainScreenContent
 import com.nytimesmostviewedarticles.ui.screens.MainScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import com.nytimesmostviewedarticles.R
-import com.nytimesmostviewedarticles.ui.components.FilterItem
-import com.nytimesmostviewedarticles.ui.screens.MainScreenContent
 import javax.inject.Inject
 
 interface MainScreenViewModel {

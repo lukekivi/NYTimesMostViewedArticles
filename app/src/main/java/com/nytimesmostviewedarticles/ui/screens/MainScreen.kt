@@ -3,7 +3,10 @@ package com.nytimesmostviewedarticles.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,7 +20,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.ui.components.*
-import com.nytimesmostviewedarticles.viewmodel.FilterOptions
 import com.nytimesmostviewedarticles.viewmodel.MainScreenViewModelImpl
 
 @ExperimentalCoilApi

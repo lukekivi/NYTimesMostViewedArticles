@@ -8,7 +8,9 @@ import com.nytimesmostviewedarticles.datatypes.SpecificArticleResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.screens.DetailScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 private const val FAILURE_TO_PASS_ID_ERROR = "Error passing data between screens: null id."
