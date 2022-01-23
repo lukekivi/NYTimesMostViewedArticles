@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -21,7 +21,7 @@ import com.nytimesmostviewedarticles.viewmodel.FilterOptions
 @Composable
 fun FilterItemLazyRow(
     filterItems: List<FilterItem>,
-    onSelected: (Int) -> Unit,
+    onSelected: (FilterOptions) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -29,7 +29,7 @@ fun FilterItemLazyRow(
             .padding(start = 10.dp, end = 10.dp, top = 20.dp, bottom = 20.dp)
             .fillMaxWidth()
     ){
-        itemsIndexed(filterItems) { index, filterItem ->
+        items(filterItems) { filterItem ->
             Column(
                 modifier = modifier
                     .background(
@@ -40,7 +40,7 @@ fun FilterItemLazyRow(
                         shape = RoundedCornerShape(10.dp)
                     )
                     .padding(start = 10.dp, end = 10.dp)
-                    .clickable { onSelected(index) }
+                    .clickable { onSelected(filterItem.filter) }
             ) {
                 Text(
                     text = stringResource(id = filterItem.filter.label),

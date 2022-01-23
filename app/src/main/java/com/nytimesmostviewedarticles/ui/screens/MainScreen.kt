@@ -28,7 +28,9 @@ fun MainScreen(
     mainScreenViewModel: MainScreenViewModelImpl = hiltViewModel(),
     onNavClick: (String) -> Unit
 ) {
-    val mainScreenContent by mainScreenViewModel.mainScreenContent.collectAsState(DEFAULT_MAIN_SCREEN_CONTENT)
+    val mainScreenContent by mainScreenViewModel.mainScreenContent.collectAsState(
+        DEFAULT_MAIN_SCREEN_CONTENT
+    )
 
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = mainScreenContent.mainScreenData is MainScreenData.Loading),
@@ -70,44 +72,53 @@ fun MainScreenCoreContent(
     mainScreenData: MainScreenData,
     onNavClick: (String) -> Unit
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        when (mainScreenData) {
-            is MainScreenData.Error -> {
+    when (mainScreenData) {
+        is MainScreenData.Error -> {
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 30.dp)
+            ) {
                 Text(
                     text = mainScreenData.message,
                     style = MaterialTheme.typography.h6
                 )
             }
+        }
 
-            is MainScreenData.Empty -> {
+        is MainScreenData.Empty -> {
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 30.dp)
+            ) {
                 Text(
                     text = stringResource(R.string.main_screen_empty_data),
                     style = MaterialTheme.typography.h6
                 )
             }
+        }
 
-            is MainScreenData.Success -> {
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(mainScreenData.articleRowDataList) { data ->
-                        ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
+        is MainScreenData.Success -> {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(mainScreenData.articleRowDataList) { data ->
+                    ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
 
-                        Divider(
-                            color = MaterialTheme.colors.primaryVariant,
-                            modifier = Modifier
-                                .padding(start = 20.dp, end = 20.dp)
-                                .fillMaxWidth()
-                        )
-                    }
+                    Divider(
+                        color = MaterialTheme.colors.primaryVariant,
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp)
+                            .fillMaxWidth()
+                    )
                 }
             }
         }
     }
+
 }
 
 private val DEFAULT_MAIN_SCREEN_CONTENT = MainScreenContent(

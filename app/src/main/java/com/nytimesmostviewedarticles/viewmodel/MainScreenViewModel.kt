@@ -19,7 +19,7 @@ import javax.inject.Inject
 interface MainScreenViewModel {
     val mainScreenContent: Flow<MainScreenContent>
     fun updateArticles()
-    fun updateFilter(filterIndex: Int)
+    fun updateFilter(filterOption: FilterOptions)
 }
 
 @HiltViewModel
@@ -41,27 +41,39 @@ class MainScreenViewModelImpl @Inject constructor(
                     MainScreenData.Loading
                 }
                 is ArticleDataResponse.Success -> {
-                    if (articleResponse.articleDataList.isEmpty()) {
+                    val filteredData = applyFilter(articleResponse.articleDataList.map { it.toArticleCardData() })
+
+                    if (filteredData.isEmpty()) {
                         MainScreenData.Empty
                     } else {
-                        MainScreenData.Success(
-                            applyFilter(articleResponse.articleDataList.map { it.toArticleCardData() })
-                        )
+                        MainScreenData.Success(filteredData)
                     }
                 }
             }
             MainScreenContent(filterItemList, mainScreenData)
         }
 
-    override fun updateFilter(filterIndex: Int) {
-        filter.value.let {
-            updateFilterItemList(filterIndex)
-            val filterOption = filterItemList[filterIndex].filter
+    override fun updateFilter(filterOption: FilterOptions) {
+        filter.value.let { curArticleFilter ->
 
-            when (it) {
+            /**
+             * Toggle the new filter in the list
+             */
+            updateFilterListItem(filterOption.ordinal)
+
+            when (curArticleFilter) {
                 is ArticleFilter.None -> filter.value = ArticleFilter.Active(filterOption)
                 is ArticleFilter.Active -> {
-                    if (it.filterOption == filterOption) {
+
+                    /**
+                     * If current active filter isn't the same as [filterOption] deselect it.
+                     */
+                    curArticleFilter.filterOption.let {
+                        if (it != filterOption) updateFilterListItem(it.ordinal)
+                    }
+
+                    // update filter state
+                    if (curArticleFilter.filterOption == filterOption) {
                         filter.value = ArticleFilter.None
                     } else {
                         filter.value = ArticleFilter.Active(filterOption)
@@ -71,7 +83,7 @@ class MainScreenViewModelImpl @Inject constructor(
         }
     }
 
-    private fun updateFilterItemList(filterIndex: Int) {
+    private fun updateFilterListItem(filterIndex: Int) {
         val filterItem = filterItemList[filterIndex]
 
         filterItemList[filterIndex] = FilterItem(
