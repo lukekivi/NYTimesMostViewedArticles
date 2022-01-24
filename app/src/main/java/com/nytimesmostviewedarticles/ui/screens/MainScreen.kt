@@ -3,10 +3,7 @@ package com.nytimesmostviewedarticles.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,48 +69,48 @@ fun MainScreenCoreContent(
     mainScreenData: MainScreenData,
     onNavClick: (String) -> Unit
 ) {
-    when (mainScreenData) {
-        is MainScreenData.Error -> {
-            Box(
-                contentAlignment = Alignment.TopCenter,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 30.dp)
-            ) {
+
+    Box(
+        contentAlignment = Alignment.TopCenter,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        when (mainScreenData) {
+            is MainScreenData.Uninitialized -> {
+                LinearProgressIndicator(
+                    modifier = Modifier.padding(top = 60.dp)
+                )
+            }
+
+            is MainScreenData.Error -> {
                 Text(
                     text = mainScreenData.message,
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.padding(top = 30.dp)
                 )
             }
-        }
 
-        is MainScreenData.Empty -> {
-            Box(
-                contentAlignment = Alignment.TopCenter,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 30.dp)
-            ) {
+            is MainScreenData.Empty -> {
                 Text(
                     text = stringResource(R.string.main_screen_empty_data),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.padding(top = 30.dp)
                 )
             }
-        }
 
-        is MainScreenData.Success -> {
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(mainScreenData.articleRowDataList) { data ->
-                    ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
+            is MainScreenData.Success -> {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(mainScreenData.articleRowDataList) { data ->
+                        ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
 
-                    Divider(
-                        color = MaterialTheme.colors.primaryVariant,
-                        modifier = Modifier
-                            .padding(start = 20.dp, end = 20.dp)
-                            .fillMaxWidth()
-                    )
+                        Divider(
+                            color = MaterialTheme.colors.primaryVariant,
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 20.dp)
+                                .fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
@@ -123,7 +120,7 @@ fun MainScreenCoreContent(
 
 private val DEFAULT_MAIN_SCREEN_CONTENT = MainScreenContent(
     filterItemList = listOf(),
-    mainScreenData = MainScreenData.Empty,
+    mainScreenData = MainScreenData.Uninitialized,
     isLoading = false
 )
 
@@ -134,8 +131,8 @@ data class MainScreenContent(
 )
 
 sealed class MainScreenData {
-    object Empty : MainScreenData()
-
+    object Empty: MainScreenData()
+    object Uninitialized: MainScreenData()
     /**
      * Valid, non-empty data is available to be displayed.
      */
