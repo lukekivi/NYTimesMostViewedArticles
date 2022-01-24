@@ -11,9 +11,7 @@ import com.nytimesmostviewedarticles.ui.components.FilterItem
 import com.nytimesmostviewedarticles.ui.screens.MainScreenContent
 import com.nytimesmostviewedarticles.ui.screens.MainScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 interface MainScreenViewModel {
@@ -37,23 +35,30 @@ class MainScreenViewModelImpl @Inject constructor(
 
     private val filterItemList = FilterOptions.values().map { FilterItem(it) }.toMutableList()
 
-    private var filter = MutableStateFlow<ArticleFilter>(ArticleFilter.None)
+    private val filter = MutableStateFlow<ArticleFilter>(ArticleFilter.None)
 
-    private var isLoading = MutableStateFlow<Boolean>(false)
+    private val isLoading = MutableStateFlow(false)
+
+    private val articleDataResponse: Flow<ArticleDataResponse> = nyTimesRepository.articleDataResponse.onEach {
+        /**
+         * Whenever an update comes in loading is complete.
+          */
+        isLoading.value = false
+    }
+
 
     override val mainScreenContent: Flow<MainScreenContent> = combine(
-        nyTimesRepository.articleDataResponse,
-        isLoading,
-        filter
+        articleDataResponse, isLoading, filter
     ) { articleResponse, loading, _ ->
          val mainScreenData = when (articleResponse) {
-                is ArticleDataResponse.Error -> MainScreenData.Error(articleResponse.message)
+                is ArticleDataResponse.Error -> {
+                    MainScreenData.Error(articleResponse.message)
+                }
                 is ArticleDataResponse.Uninitialized -> {
-                    userRefreshArticles()
-                    MainScreenData.Empty
+                    nyTimesRepository.updateArticleData()
+                    MainScreenData.Uninitialized
                 }
                 is ArticleDataResponse.Success -> {
-                    isLoading.value = false
                     val filteredData = applyFilter(articleResponse.articleDataList.map { it.toArticleCardData() })
 
                     if (filteredData.isEmpty()) {
@@ -63,6 +68,7 @@ class MainScreenViewModelImpl @Inject constructor(
                     }
                 }
             }
+
             MainScreenContent(filterItemList, mainScreenData, loading)
         }
 
