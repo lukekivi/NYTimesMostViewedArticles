@@ -9,7 +9,7 @@ import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
 
-object TestNetworkResults {
+object FakeNetworkResults {
 
     val id = "id_1"
 

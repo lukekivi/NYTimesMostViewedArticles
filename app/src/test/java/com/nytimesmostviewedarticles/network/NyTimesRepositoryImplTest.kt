@@ -42,7 +42,7 @@ class NyTimesRepositoryImplTest {
 
     @Test
     fun `when service throws error articleDataResponse emits error value`() {
-        coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.throws(TestNetworkResults.exception)
+        coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.throws(FakeNetworkResults.exception)
 
         runBlocking {
             nyTimesRepositoryImpl.articleDataResponse.test {
@@ -57,7 +57,7 @@ class NyTimesRepositoryImplTest {
     @Test
     fun `when service returns success results articleDataResponse emits success value`() {
         coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.returns(
-            TestNetworkResults.success
+            FakeNetworkResults.success
         )
 
         runBlocking {
@@ -72,12 +72,12 @@ class NyTimesRepositoryImplTest {
 
     @Test
     fun `when service throws error getSpecificArticle flow emits error value`() {
-        coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.throws(TestNetworkResults.exception)
+        coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.throws(FakeNetworkResults.exception)
 
         nyTimesRepositoryImpl.updateArticleData()
 
         runBlocking {
-            nyTimesRepositoryImpl.getSpecificArticleData(TestNetworkResults.id).test {
+            nyTimesRepositoryImpl.getSpecificArticleData(FakeNetworkResults.id).test {
                 assert(awaitItem() is SpecificArticleResponse.Error)
                 cancelAndIgnoreRemainingEvents()
             }
@@ -87,13 +87,13 @@ class NyTimesRepositoryImplTest {
     @Test
     fun `when service returns success results and getSpecificArticle is called with correct id flow emits success value`() {
         coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.returns(
-            TestNetworkResults.success
+            FakeNetworkResults.success
         )
 
         nyTimesRepositoryImpl.updateArticleData()
 
         runBlocking {
-            nyTimesRepositoryImpl.getSpecificArticleData(TestNetworkResults.id).test {
+            nyTimesRepositoryImpl.getSpecificArticleData(FakeNetworkResults.id).test {
                 val value = awaitItem()
                 assert(value is SpecificArticleResponse.Success)
                 cancelAndIgnoreRemainingEvents()
@@ -104,7 +104,7 @@ class NyTimesRepositoryImplTest {
     @Test
     fun `when service returns success results and getSpecificArticle is called with incorrect id flow emits NoMatch value`() {
         coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.returns(
-            TestNetworkResults.success
+            FakeNetworkResults.success
         )
 
         nyTimesRepositoryImpl.updateArticleData()
@@ -120,21 +120,21 @@ class NyTimesRepositoryImplTest {
     @Test
     fun `when updateArticle data is invoked a new request is sent to the service`() {
         coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.returns(
-            TestNetworkResults.success
+            FakeNetworkResults.success
         )
 
         nyTimesRepositoryImpl.updateArticleData()
 
         runBlocking {
             nyTimesRepositoryImpl.articleDataResponse.test {
-                assert((awaitItem() as ArticleDataResponse.Success).articleDataList[0].id == TestNetworkResults.id)
+                assert((awaitItem() as ArticleDataResponse.Success).articleDataList[0].id == FakeNetworkResults.id)
 
                 coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.returns(
-                    TestNetworkResults.successTwo
+                    FakeNetworkResults.successTwo
                 )
                 nyTimesRepositoryImpl.updateArticleData()
 
-                assert((awaitItem() as ArticleDataResponse.Success).articleDataList[0].id == TestNetworkResults.idTwo)
+                assert((awaitItem() as ArticleDataResponse.Success).articleDataList[0].id == FakeNetworkResults.idTwo)
                 cancelAndIgnoreRemainingEvents()
             }
         }
