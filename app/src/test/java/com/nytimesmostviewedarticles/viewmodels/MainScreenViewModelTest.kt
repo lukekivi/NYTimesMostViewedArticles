@@ -47,7 +47,7 @@ class MainScreenViewModelTest {
 
     @Test
     fun `when the viewModel receives an error response from the repo it emits an error value`() {
-        val fakeStateFlow = MutableStateFlow<ArticleDataResponse>(FakeRepoResults.error)
+        val fakeStateFlow = MutableStateFlow<ArticleDataResponse>(FakeRepoResults.articleDataError)
 
         every { fakeNyTimesRepository.articleDataResponse }.returns(fakeStateFlow)
 

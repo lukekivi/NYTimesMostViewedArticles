@@ -42,6 +42,6 @@ object FakeRepoResults {
     val articleDataSuccessMultiple = ArticleDataResponse.Success(articleDataList = listOf(articleDataOne, articleDataTwo))
 
     const val errorMessage = "Error"
-    val error = ArticleDataResponse.Error(errorMessage)
+    val articleDataError = ArticleDataResponse.Error(errorMessage)
 
 }
