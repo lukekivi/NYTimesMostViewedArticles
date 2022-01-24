@@ -13,8 +13,8 @@ The time period options offered by the [API](https://developer.nytimes.com/docs/
 | 1 day    | No   |
 | 7 days   | Yes  |
 | 30 days  | No   |
-\
-\
+
+
 The queried article data includes media. This app is only concerned with exposing images and there are three sizes:
 |         Name        | Width | Height | Used |
 | ------------------- | ----- | ------ | ---- |
