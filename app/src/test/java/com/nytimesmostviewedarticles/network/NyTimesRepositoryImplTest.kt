@@ -1,7 +1,8 @@
 package com.nytimesmostviewedarticles.network
 
 import app.cash.turbine.test
-import com.nytimesmostviewedarticles.datatypes.*
+import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
+import com.nytimesmostviewedarticles.datatypes.SpecificArticleResponse
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.*

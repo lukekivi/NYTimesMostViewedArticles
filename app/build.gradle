@@ -95,7 +95,6 @@ dependencies {
 
     // flow testing
     testImplementation 'app.cash.turbine:turbine:0.7.0'
-
 }
 
 // Allow references to generated code
