@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,9 +21,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,11 +29,12 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleData
-import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
 import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
+
+private const val ANNOTATION_TAG = "URL"
 
 @ExperimentalCoilApi
 @Composable
@@ -45,7 +42,7 @@ fun DetailScreen(
     detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
     onNavClick: () -> Unit
 ) {
-    val detailScreenData by detailsScreenViewModel.getArticleDetail.collectAsState(DetailScreenData.Loading)
+    val detailScreenData by detailsScreenViewModel.getArticleDetail.collectAsState(DetailScreenData.NoMatch)
 
     Scaffold(
         topBar = {
@@ -71,13 +68,6 @@ fun DetailScreenContent(
 ) {
     when (detailScreenData) {
 
-        is DetailScreenData.Loading -> {
-            CircularProgressIndicator(
-                color = MaterialTheme.colors.secondary,
-                modifier = Modifier.padding(top = 30.dp)
-            )
-        }
-
         is DetailScreenData.NoMatch -> {
             Text(
                 text = stringResource(R.string.detail_screen_no_match),
@@ -100,7 +90,8 @@ fun DetailScreenContent(
             LazyColumn(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 item {
 
@@ -113,7 +104,7 @@ fun DetailScreenContent(
                     )
 
                     Divider(
-                        color = MaterialTheme.colors.secondary,
+                        color = MaterialTheme.colors.primaryVariant,
                         thickness = 1.dp,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
@@ -160,7 +151,7 @@ fun DetailScreenContent(
                     )
 
                     Divider(
-                        color = MaterialTheme.colors.secondary,
+                        color = MaterialTheme.colors.primaryVariant,
                         thickness = 1.dp,
                         modifier = Modifier
                             .fillMaxWidth(.9f)
@@ -169,7 +160,8 @@ fun DetailScreenContent(
 
                     HyperlinkedText(
                         url = articleData.url,
-                        text = stringResource(R.string.detail_screen_read_more)
+                        text = stringResource(R.string.detail_screen_read_more),
+                        modifier = Modifier.padding(bottom = 30.dp)
                     )
                 }
             }
@@ -241,13 +233,14 @@ fun TitledFacetLazyRow(
 fun HyperlinkedText(
     url: String,
     text: String,
+    modifier: Modifier
 ) {
     val annotatedLinkString: AnnotatedString = buildAnnotatedString {
         append(text)
 
         // attach a string annotation that stores a URL to the text "link"
         addStringAnnotation(
-            tag = "URL",
+            tag = ANNOTATION_TAG,
             annotation = url,
             start = 0,
             end = text.length
@@ -261,14 +254,15 @@ fun HyperlinkedText(
     ClickableText(
         text = annotatedLinkString,
         style = TextStyle(
-            color = Color.Blue,
+            color = MaterialTheme.colors.secondaryVariant,
             fontSize = 18.sp,
             fontFamily = FontFamily.Serif,
-            textDecoration = TextDecoration.Underline
+            textDecoration = TextDecoration.Underline,
         ),
+        modifier = modifier,
         onClick = {
             annotatedLinkString
-                .getStringAnnotations("URL", it, it)
+                .getStringAnnotations(ANNOTATION_TAG, it, it)
                 .firstOrNull()?.let { stringAnnotation ->
                     uriHandler.openUri(stringAnnotation.item)
                 }
@@ -293,8 +287,11 @@ fun BackButtonIcon(
 
 
 sealed class DetailScreenData {
-    object Loading: DetailScreenData()
     object NoMatch: DetailScreenData()
+
+    /**
+     * Valid data is available to be displayed.
+     */
     class Success(val articleData: ArticleData): DetailScreenData()
     class Error(val message: String): DetailScreenData()
 }

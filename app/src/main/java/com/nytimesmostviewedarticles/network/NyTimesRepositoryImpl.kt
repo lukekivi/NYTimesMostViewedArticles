@@ -1,11 +1,13 @@
 package com.nytimesmostviewedarticles.network
 
 import com.nytimesmostviewedarticles.datatypes.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +21,15 @@ private const val DEFAULT_ERROR_MESSAGE = "Unknown error has occurred"
 
 interface NyTimesRepository {
     val articleDataResponse: StateFlow<ArticleDataResponse>
+
+    /**
+     * Get data about a specific article via it's [id]. If there is no data make an API call.
+     */
     fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse>
+
+    /**
+     * Get up to date article data from the the API.
+     */
     fun updateArticleData()
 }
 
@@ -37,8 +47,6 @@ class NyTimesRepositoryImpl
     override fun updateArticleData() {
         externalScope.launch(dispatcher) {
             try {
-                _articleDataResponse.emit(ArticleDataResponse.Loading)
-
                 _articleDataResponse.emit(
                     ArticleDataResponse.Success(
                         nyTimesApiService
@@ -62,7 +70,6 @@ class NyTimesRepositoryImpl
         when (_articleDataResponse.value) {
             is ArticleDataResponse.Error,
             is ArticleDataResponse.Uninitialized -> updateArticleData()
-            is ArticleDataResponse.Loading,
             is ArticleDataResponse.Success -> Unit
         }
 
@@ -74,8 +81,7 @@ class NyTimesRepositoryImpl
                         ?.let { SpecificArticleResponse.Success(it) }
                         ?: SpecificArticleResponse.NoMatch
                 }
-                is ArticleDataResponse.Uninitialized,
-                is ArticleDataResponse.Loading -> SpecificArticleResponse.Loading
+                is ArticleDataResponse.Uninitialized -> SpecificArticleResponse.NoMatch
                 is ArticleDataResponse.Error -> {
                     SpecificArticleResponse.Error(articleDataResponse.message)
                 }

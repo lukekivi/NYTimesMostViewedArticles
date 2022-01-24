@@ -3,34 +3,31 @@
     <string name="article_card_published_line">Published \u0020</string>
     <string name="app_bar_title">NY Times Most Viewed</string>
     <string name="no_active_article_data_request">No Active Request.</string>
+    <string name="main_screen_empty_data">No article data to display.</string>
+
     <string name="detail_screen_byline">Written\u0020</string>
     <string name="detail_screen_published_by">Published \u0020</string>
     <string name="detail_screen_updated">  \u0020updated \u0020</string>
     <string name="detail_screen_read_more">Read More</string>
     <string name="detail_screen_geography">Geography:</string>
     <string name="detail_screen_details">Details:</string>
-    <string name="main_screen_empty_data">No article data to display.</string>
     <string name="detail_screen_no_match">Unable to retrieve data.</string>
     <string name="detail_screen_null_id">Passed ID was null.</string>
-    <string-array name="section_names">
-        <item>World</item>
-        <item>U.S.</item>
-        <item>Politics</item>
-        <item>N.Y.</item>
-        <item>Business</item>
-        <item>Opinion</item>
-        <item>Tech</item>
-        <item>Science</item>
-        <item>Health</item>
-        <item>Sports</item>
-        <item>Arts</item>
-        <item>Books</item>
-        <item>Style</item>
-        <item>Food</item>
-        <item>Travel</item>
-        <item>Magazine</item>
-        <item>T Magazine</item>
-        <item>Real Estate</item>
-        <item>Video</item>
-    </string-array>
+
+    <string name="section_name_world">World</string>
+    <string name="section_name_us">U.S.</string>
+    <string name="section_name_politics">Politics</string>
+    <string name="section_name_ny">N.Y.</string>
+    <string name="section_name_business">Business</string>
+    <string name="section_name_opinion">Opinion</string>
+    <string name="section_name_tech">Tech</string>
+    <string name="section_name_science">Science</string>
+    <string name="section_name_wellness">Wellness</string>
+    <string name="section_name_health">Health</string>
+    <string name="section_name_sports">Sports</string>
+    <string name="section_name_arts">Arts</string>
+    <string name="section_name_books">Books</string>
+    <string name="section_name_style">Style</string>
+    <string name="section_name_food">Food</string>
+    <string name="section_name_travel">Travel</string>
 </resources>

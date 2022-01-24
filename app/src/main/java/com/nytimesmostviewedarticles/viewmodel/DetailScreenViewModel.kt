@@ -8,7 +8,9 @@ import com.nytimesmostviewedarticles.datatypes.SpecificArticleResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.screens.DetailScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 private const val FAILURE_TO_PASS_ID_ERROR = "Error passing data between screens: null id."
@@ -27,7 +29,6 @@ class DetailScreenViewModelImpl @Inject constructor(
             nyTimesRepository.getSpecificArticleData(articleId)
         }?.map {
             when (it) {
-                is SpecificArticleResponse.Loading -> DetailScreenData.Loading
                 is SpecificArticleResponse.NoMatch -> DetailScreenData.NoMatch
                 is SpecificArticleResponse.Error -> DetailScreenData.Error(it.message)
                 is SpecificArticleResponse.Success -> DetailScreenData.Success(it.articleData)
