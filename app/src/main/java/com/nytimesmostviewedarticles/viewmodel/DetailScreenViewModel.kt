@@ -34,6 +34,6 @@ class DetailScreenViewModelImpl @Inject constructor(
                 is SpecificArticleResponse.Success -> DetailScreenData.Success(it.articleData)
             }
         } ?: flow {
-            ArticleDataResponse.Error(FAILURE_TO_PASS_ID_ERROR)
+            emit(DetailScreenData.Error(FAILURE_TO_PASS_ID_ERROR))
         }
 }
