@@ -3,7 +3,6 @@ package com.nytimesmostviewedarticles.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.nytimesmostviewedarticles.Destinations
-import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
 import com.nytimesmostviewedarticles.datatypes.SpecificArticleResponse
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.screens.DetailScreenData
@@ -34,6 +33,6 @@ class DetailScreenViewModelImpl @Inject constructor(
                 is SpecificArticleResponse.Success -> DetailScreenData.Success(it.articleData)
             }
         } ?: flow {
-            ArticleDataResponse.Error(FAILURE_TO_PASS_ID_ERROR)
+            emit(DetailScreenData.Error(FAILURE_TO_PASS_ID_ERROR))
         }
 }

@@ -32,6 +32,17 @@ The queried article data includes media. This app is only concerned with exposin
 |   Image Loading      |              Coil                  |
 | Dependency Injection |              Hilt                  |
 | Asynchronous Ops     |           Coroutines               |
+|   Swipe to Refresh   |  Accompanist Swipe to Refresh      |
+
+## Testing
+|     Use Case      |            Dependency              | 
+| ----------------- | ---------------------------------- |
+|     Testing       |              JUnit                 |
+|     Mocking       |         Android Compose            | 
+|      Flows        |  Accompanist Navigation Animation  | 
+
+- The core logic of this app lies within the repository and the two ViewModels. Those are thoroughly tested.
+- In the future it is important to implement some UI tests.
 
 ## Future Changes
 - Right now if network connection is unavailable the error message from retrofit is displayed. In the future I would like to more gracefully handle loss of internet by:
