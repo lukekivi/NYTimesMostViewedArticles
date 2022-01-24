@@ -2,9 +2,13 @@ package com.nytimesmostviewedarticles.viewmodels
 
 import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
+import com.nytimesmostviewedarticles.datatypes.SpecificArticleResponse
 import com.nytimesmostviewedarticles.viewmodel.FilterOptions
 
 object FakeRepoResults {
+    /**
+     * Data for MainScreenViewModel
+     */
     val filterOption = FilterOptions.WORLD
 
     const val id = "id_1"
@@ -44,4 +48,25 @@ object FakeRepoResults {
     const val errorMessage = "Error"
     val articleDataError = ArticleDataResponse.Error(errorMessage)
 
+    /**
+     * Data for DetailScreenViewModel
+     */
+
+    val specificArticleSuccess = SpecificArticleResponse.Success(
+        articleData = ArticleData(
+            id = id,
+            url = "",
+            publishedDate = "",
+            section = "",
+            updated = "",
+            byline = "",
+            title = "",
+            abstract = "",
+            descriptors = listOf(),
+            geographyFacets = listOf(),
+            media = null
+        )
+    )
+
+    val specificArticleError = SpecificArticleResponse.Error(errorMessage)
 }
