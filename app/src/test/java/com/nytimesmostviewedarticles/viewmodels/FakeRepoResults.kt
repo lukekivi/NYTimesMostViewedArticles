@@ -37,9 +37,9 @@ object FakeRepoResults {
         media = null
     )
 
-    val success = ArticleDataResponse.Success(articleDataList = listOf(articleDataOne))
-    val successTwo = ArticleDataResponse.Success(articleDataList = listOf(articleDataTwo))
-    val successMultiple = ArticleDataResponse.Success(articleDataList = listOf(articleDataOne, articleDataTwo))
+    val articleDataSuccess = ArticleDataResponse.Success(articleDataList = listOf(articleDataOne))
+    val articleDataSuccessTwo = ArticleDataResponse.Success(articleDataList = listOf(articleDataTwo))
+    val articleDataSuccessMultiple = ArticleDataResponse.Success(articleDataList = listOf(articleDataOne, articleDataTwo))
 
     const val errorMessage = "Error"
     val error = ArticleDataResponse.Error(errorMessage)

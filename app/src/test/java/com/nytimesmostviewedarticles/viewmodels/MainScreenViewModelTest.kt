@@ -29,7 +29,7 @@ class MainScreenViewModelTest {
 
         every { fakeNyTimesRepository.articleDataResponse }.returns(fakeStateFlow)
         every { fakeNyTimesRepository.updateArticleData() }.answers {
-            fakeStateFlow.value = FakeRepoResults.success
+            fakeStateFlow.value = FakeRepoResults.articleDataSuccess
         }
 
         runBlocking {
@@ -64,11 +64,12 @@ class MainScreenViewModelTest {
 
     @Test
     fun `when user refreshes article viewModel asks for an update then it is updated`() {
-        val fakeStateFlow = MutableStateFlow<ArticleDataResponse>(FakeRepoResults.success)
+        val fakeStateFlow =
+            MutableStateFlow<ArticleDataResponse>(FakeRepoResults.articleDataSuccess)
 
         every { fakeNyTimesRepository.articleDataResponse }.returns(fakeStateFlow)
         every { fakeNyTimesRepository.updateArticleData() }.answers {
-            fakeStateFlow.value = FakeRepoResults.successTwo
+            fakeStateFlow.value = FakeRepoResults.articleDataSuccessTwo
         }
 
         runBlocking {
@@ -99,7 +100,8 @@ class MainScreenViewModelTest {
 
     @Test
     fun `when a new filter is applied it updates the mainScreenData list of articles`() {
-        val fakeStateFlow = MutableStateFlow<ArticleDataResponse>(FakeRepoResults.successMultiple)
+        val fakeStateFlow =
+            MutableStateFlow<ArticleDataResponse>(FakeRepoResults.articleDataSuccessMultiple)
 
         every { fakeNyTimesRepository.articleDataResponse }.returns(fakeStateFlow)
 
@@ -109,12 +111,20 @@ class MainScreenViewModelTest {
             mainScreenViewModel.mainScreenContent.test {
 
                 val firstItemData = (awaitItem().mainScreenData as MainScreenData.Success)
-                assert(!firstItemData.articleRowDataList.all { it.section == FakeRepoResults.filterOption.apiFilterName })
+                assert(
+                    !firstItemData.articleRowDataList.all {
+                        it.section == FakeRepoResults.filterOption.apiFilterName
+                    }
+                )
 
                 mainScreenViewModel.userChangedFilter(filterOption = FakeRepoResults.filterOption)
 
                 val secondItemData = (awaitItem().mainScreenData as MainScreenData.Success)
-                assert(secondItemData.articleRowDataList.all { it.section == FakeRepoResults.filterOption.apiFilterName })
+                assert(
+                    secondItemData.articleRowDataList.all {
+                        it.section == FakeRepoResults.filterOption.apiFilterName
+                    }
+                )
 
                 cancelAndIgnoreRemainingEvents()
             }
