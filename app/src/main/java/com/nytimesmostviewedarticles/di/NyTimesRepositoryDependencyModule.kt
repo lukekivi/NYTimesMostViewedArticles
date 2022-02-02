@@ -28,14 +28,8 @@ class NyTimesRepositoryDependencyModule {
             .build().create(NyTimesApiService::class.java)
     }
 
-    @DelicateCoroutinesApi
     @Provides
-    fun providesExternAlScope(): CoroutineScope {
-        return GlobalScope
-    }
-
-    @Provides
-    fun providesDispatcher(): CoroutineDispatcher {
-        return Dispatchers.IO
+    fun providesCoroutineScope(): CoroutineScope {
+        return CoroutineScope(Dispatchers.IO + SupervisorJob())
     }
 }

@@ -1,7 +1,6 @@
 package com.nytimesmostviewedarticles.network
 
 import com.nytimesmostviewedarticles.datatypes.*
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,15 +36,14 @@ interface NyTimesRepository {
 class NyTimesRepositoryImpl
 @Inject constructor(
     private val nyTimesApiService: NyTimesApiService,
-    private val externalScope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher
+    private val coroutineScope: CoroutineScope,
 ) : NyTimesRepository {
     private val _articleDataResponse =
         MutableStateFlow<ArticleDataResponse>(ArticleDataResponse.Uninitialized)
     override val articleDataResponse: StateFlow<ArticleDataResponse> = _articleDataResponse
 
     override fun updateArticleData() {
-        externalScope.launch(dispatcher) {
+        coroutineScope.launch {
             try {
                 _articleDataResponse.emit(
                     ArticleDataResponse.Success(
