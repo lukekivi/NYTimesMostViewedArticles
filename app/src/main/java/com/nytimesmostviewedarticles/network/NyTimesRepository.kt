@@ -108,7 +108,7 @@ class NyTimesRepositoryImpl
         return ArticleData(
             id = id,
             url = url,
-            publishedDate = published_date,
+            publishedDate = publishedDate,
             section = section,
             updated = updated,
             byline = byline,
@@ -117,8 +117,8 @@ class NyTimesRepositoryImpl
             descriptors = listOf(
                 section,
                 subsection
-            ) + des_facet,
-            geographyFacets = geo_facet,
+            ) + desFacet,
+            geographyFacets = geoFacet,
             media = mediaDataForUI
         )
     }
