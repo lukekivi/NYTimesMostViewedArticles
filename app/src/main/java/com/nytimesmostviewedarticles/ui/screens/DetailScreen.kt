@@ -33,7 +33,7 @@ import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
 
-private const val ANNOTATION_TAG = "URL"
+private const val AnnotationTag = "URL"
 
 @ExperimentalCoilApi
 @Composable
@@ -239,7 +239,7 @@ fun HyperlinkedText(
 
         // attach a string annotation that stores a URL to the text "link"
         addStringAnnotation(
-            tag = ANNOTATION_TAG,
+            tag = AnnotationTag,
             annotation = url,
             start = 0,
             end = text.length
@@ -261,7 +261,7 @@ fun HyperlinkedText(
         modifier = modifier,
         onClick = {
             annotatedLinkString
-                .getStringAnnotations(ANNOTATION_TAG, it, it)
+                .getStringAnnotations(AnnotationTag, it, it)
                 .firstOrNull()?.let { stringAnnotation ->
                     uriHandler.openUri(stringAnnotation.item)
                 }

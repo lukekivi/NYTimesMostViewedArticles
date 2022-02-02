@@ -8,7 +8,6 @@ import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.screens.DetailScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -25,7 +24,7 @@ class DetailScreenViewModelImpl @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): DetailScreenViewModel, ViewModel() {
     override val getArticleDetail =
-        savedStateHandle.get<String>(Destinations.DetailScreen.argId)?.let { articleId ->
+        savedStateHandle.get<String>(Destinations.DetailScreen.ArgId)?.let { articleId ->
             nyTimesRepository.getSpecificArticleData(articleId)
         }?.map {
             when (it) {

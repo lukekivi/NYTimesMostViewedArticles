@@ -9,7 +9,7 @@ object FakeRepoResults {
     /**
      * Data for MainScreenViewModel
      */
-    val filterOption = FilterOptions.WORLD
+    val filterOption = FilterOptions.World
 
     const val id = "id_1"
     private val articleDataOne = ArticleData(

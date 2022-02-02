@@ -30,7 +30,7 @@ sealed class Destinations(val route: String) {
             return "DetailScreen/$id"
         }
 
-        const val argId = "id"
+        const val ArgId = "id"
     }
 }
 
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
             composable(
                 route = Destinations.DetailScreen.route,
-                arguments = listOf(navArgument(Destinations.DetailScreen.argId) { type = NavType.StringType }),
+                arguments = listOf(navArgument(Destinations.DetailScreen.ArgId) { type = NavType.StringType }),
                 enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }) },
                 exitTransition = { slideOutHorizontally(targetOffsetX = { 1000 }) }
             ) {

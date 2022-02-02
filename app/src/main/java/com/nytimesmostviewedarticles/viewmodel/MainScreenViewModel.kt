@@ -160,21 +160,21 @@ enum class FilterOptions(
      */
     val apiFilterName: String
 ) {
-    WORLD(R.string.section_name_world, "World"),
-    US(R.string.section_name_us, "U.S."),
-    POLITICS(R.string.section_name_politics, "Politics"),
-    NY(R.string.section_name_ny, "New York"),
-    BUSINESS(R.string.section_name_business, "Business"),
-    OPINION(R.string.section_name_opinion, "Opinion"),
-    TECH(R.string.section_name_tech, "Technology"),
-    SCIENCE(R.string.section_name_science, "Science"),
-    WELLNESS(R.string.section_name_wellness, "Well"),
-    HEALTH(R.string.section_name_health, "Health"),
-    SPORTS(R.string.section_name_sports, "Sports"),
-    ARTS(R.string.section_name_arts, "Arts"),
-    BOOKS(R.string.section_name_books, "Books"),
-    STYLE(R.string.section_name_style, "Style"),
-    FOOD(R.string.section_name_food, "Food"),
-    TRAVEL(R.string.section_name_travel, "Travel")
+    World(R.string.section_name_world, "World"),
+    Us(R.string.section_name_us, "U.S."),
+    Politics(R.string.section_name_politics, "Politics"),
+    Ny(R.string.section_name_ny, "New York"),
+    Business(R.string.section_name_business, "Business"),
+    Opinion(R.string.section_name_opinion, "Opinion"),
+    Tech(R.string.section_name_tech, "Technology"),
+    Science(R.string.section_name_science, "Science"),
+    Wellness(R.string.section_name_wellness, "Well"),
+    Health(R.string.section_name_health, "Health"),
+    Sports(R.string.section_name_sports, "Sports"),
+    Arts(R.string.section_name_arts, "Arts"),
+    Books(R.string.section_name_books, "Books"),
+    Style(R.string.section_name_style, "Style"),
+    Food(R.string.section_name_food, "Food"),
+    Travel(R.string.section_name_travel, "Travel")
 }
 
