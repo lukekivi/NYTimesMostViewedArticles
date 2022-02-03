@@ -36,100 +36,77 @@ class MainScreenViewModelImpl @Inject constructor(
     private val nyTimesRepository: NyTimesRepository
 ) : ViewModel(), MainScreenViewModel {
 
-    private val filterItemList = FilterOptions.values().map { FilterItem(it) }.toMutableList()
+    private val filterItemListFlow = MutableStateFlow(FilterOptions.values().map { FilterItem(it) }.toList())
 
-    private val filter = MutableStateFlow<ArticleFilter>(ArticleFilter.None)
+    private val isLoadingFlow = MutableStateFlow(false)
 
-    private val isLoading = MutableStateFlow(false)
-
-    private val articleDataResponse: Flow<ArticleDataResponse> =
+    private val articleDataResponseFlow: Flow<ArticleDataResponse> =
         nyTimesRepository.articleDataResponse.onEach {
             /**
              * Whenever an update comes in loading is complete.
              */
-            isLoading.value = false
+            isLoadingFlow.value = false
         }
 
 
     override val mainScreenContent: Flow<MainScreenContent> = combine(
-        articleDataResponse, isLoading, filter
-    ) { articleResponse, loading, _ ->
-        val mainScreenData = when (articleResponse) {
+        articleDataResponseFlow, isLoadingFlow, filterItemListFlow
+    ) { articleDataResponse, isLoading, filterItemList ->
+        val mainScreenData = when (articleDataResponse) {
             is ArticleDataResponse.Error -> {
-                MainScreenData.Error(articleResponse.message)
+                MainScreenData.Error(message = articleDataResponse.message)
             }
             is ArticleDataResponse.Uninitialized -> {
                 nyTimesRepository.updateArticleData()
                 MainScreenData.Uninitialized
             }
             is ArticleDataResponse.Success -> {
-                val filteredData =
-                    applyFilter(articleResponse.articleDataList.map { it.toArticleCardData() })
+                /**
+                 * Filter the data if a filter is selected
+                 */
+                val filteredData = filterItemList
+                    .firstOrNull { it.isSelected }
+                    ?.let { filterItem ->
+                        articleDataResponse.articleDataList
+                            .filter { it.section == filterItem.filter.apiFilterName }
+                    }
+                    ?: articleDataResponse.articleDataList
 
-                if (filteredData.isEmpty()) {
+                if (filteredData.isNullOrEmpty()) {
                     MainScreenData.Empty
                 } else {
-                    MainScreenData.Success(filteredData)
+                    MainScreenData.Success(
+                        articleRowDataList = filteredData.map { it.toArticleCardData() }
+                    )
                 }
             }
         }
 
-        MainScreenContent(filterItemList, mainScreenData, loading)
+        MainScreenContent(filterItemList, mainScreenData, isLoading)
     }
 
 
     override fun userRefreshArticles() {
-        isLoading.value = true
+        isLoadingFlow.value = true
         nyTimesRepository.updateArticleData()
     }
 
 
     override fun userChangedFilter(filterOption: FilterOptions) {
-        val curArticleFilter = filter.value
+        val newFilterList = FilterOptions.values().map { FilterItem(it) }.toMutableList()
 
-        /**
-         * Toggle the new filter in the list
-         */
-        updateFilterListItem(filterOption.ordinal)
+        val prevFilterOption = filterItemListFlow.value.firstOrNull { it.isSelected }
 
-        when (curArticleFilter) {
-            is ArticleFilter.None -> filter.value = ArticleFilter.Active(filterOption)
-            is ArticleFilter.Active -> {
-                /**
-                 * If current active filter isn't the same as [filterOption] deselect it.
-                 */
-                if (curArticleFilter.filterOption != filterOption) {
-                    updateFilterListItem(curArticleFilter.filterOption.ordinal)
-                }
-
-                // update filter state
-                if (curArticleFilter.filterOption == filterOption) {
-                    filter.value = ArticleFilter.None
-                } else {
-                    filter.value = ArticleFilter.Active(filterOption)
-                }
-            }
-
+        if (prevFilterOption?.filter != filterOption) {
+            newFilterList[filterOption.ordinal] = FilterItem(
+                filter = filterOption,
+                isSelected = true
+            )
         }
+
+        filterItemListFlow.value = newFilterList.toList()
     }
 
-
-    private fun updateFilterListItem(filterIndex: Int) {
-        val filterItem = filterItemList[filterIndex]
-
-        filterItemList[filterIndex] = FilterItem(
-            filter = filterItem.filter,
-            isSelected = !filterItem.isSelected
-        )
-    }
-
-
-    private fun applyFilter(articleCardDataList: List<ArticleCardData>) =
-        when (val articleFilter = filter.value) {
-            is ArticleFilter.None -> articleCardDataList
-            is ArticleFilter.Active -> articleCardDataList
-                .filter { it.section == articleFilter.filterOption.apiFilterName }
-        }
 
 
     private fun ArticleData.toArticleCardData() = ArticleCardData(
@@ -140,16 +117,6 @@ class MainScreenViewModelImpl @Inject constructor(
         descriptors = descriptors,
         media = media
     )
-
-
-    private sealed class ArticleFilter {
-        object None : ArticleFilter()
-
-        /**
-         * [mainScreenContent] article data is filtered by [filterOption]
-         */
-        class Active(val filterOption: FilterOptions) : ArticleFilter()
-    }
 }
 
 
