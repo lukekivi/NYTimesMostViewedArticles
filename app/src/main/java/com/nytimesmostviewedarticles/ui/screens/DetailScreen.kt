@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
@@ -41,7 +43,7 @@ fun DetailScreen(
     detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
     onNavClick: () -> Unit
 ) {
-    val detailScreenData by detailsScreenViewModel.getArticleDetail.collectAsState(DetailScreenData.NoMatch)
+    val detailScreenDataContent by detailsScreenViewModel.detailScreenContentFlow.collectAsState(DEFAULT_DETAIL_SCREEN_CONTENT)
 
     Scaffold(
         topBar = {
@@ -50,11 +52,18 @@ fun DetailScreen(
             )
         }
     ) {
-        Box(
-            contentAlignment = Alignment.TopCenter,
-            modifier = Modifier.fillMaxSize()
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = detailScreenDataContent.isLoading),
+            onRefresh = { detailsScreenViewModel.refreshAppData() }
         ) {
-            DetailScreenContent(detailScreenData = detailScreenData)
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (!detailScreenDataContent.isLoading) {
+                    DetailScreenContent(detailScreenData = detailScreenDataContent.detailScreenData)
+                }
+            }
         }
     }
 }
@@ -66,7 +75,7 @@ fun DetailScreenContent(
     detailScreenData: DetailScreenData
 ) {
     when (detailScreenData) {
-
+        is DetailScreenData.Uninitialized -> {}
         is DetailScreenData.NoMatch -> {
             Text(
                 text = stringResource(R.string.detail_screen_no_match),
@@ -284,9 +293,14 @@ fun BackButtonIcon(
     }
 }
 
+data class DetailScreenContent(
+    val detailScreenData: DetailScreenData,
+    val isLoading: Boolean
+)
 
 sealed class DetailScreenData {
     object NoMatch: DetailScreenData()
+    object Uninitialized: DetailScreenData()
 
     /**
      * Valid data is available to be displayed.
@@ -294,3 +308,8 @@ sealed class DetailScreenData {
     class Success(val articleData: ArticleData): DetailScreenData()
     class Error(val message: String): DetailScreenData()
 }
+
+private val DEFAULT_DETAIL_SCREEN_CONTENT = DetailScreenContent(
+    detailScreenData = DetailScreenData.Uninitialized,
+    isLoading = false
+)

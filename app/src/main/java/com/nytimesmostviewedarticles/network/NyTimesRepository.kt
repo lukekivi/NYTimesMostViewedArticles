@@ -63,29 +63,20 @@ class NyTimesRepositoryImpl
         }
     }
 
-    override fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse> {
-        // Refresh article data if need be
-        when (_articleDataResponse.value) {
-            is ArticleDataResponse.Error,
-            is ArticleDataResponse.Uninitialized -> updateArticleData()
-            is ArticleDataResponse.Success -> Unit
-        }
-
-        // Return results mapped to SpecificDataResponse
-        return _articleDataResponse.map { articleDataResponse ->
+    override fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse> =
+        _articleDataResponse.map { articleDataResponse ->
             when (articleDataResponse) {
                 is ArticleDataResponse.Success -> {
                     articleDataResponse.articleDataList.firstOrNull { it.id == id }
                         ?.let { SpecificArticleResponse.Success(it) }
                         ?: SpecificArticleResponse.NoMatch
                 }
-                is ArticleDataResponse.Uninitialized -> SpecificArticleResponse.NoMatch
+                is ArticleDataResponse.Uninitialized -> SpecificArticleResponse.Uninitialized
                 is ArticleDataResponse.Error -> {
                     SpecificArticleResponse.Error(articleDataResponse.message)
                 }
             }
         }
-    }
 
     private fun ViewedArticle.toArticleData(): ArticleData {
         val media = media

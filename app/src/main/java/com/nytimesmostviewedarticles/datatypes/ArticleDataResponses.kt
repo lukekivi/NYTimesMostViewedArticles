@@ -4,6 +4,7 @@ package com.nytimesmostviewedarticles.datatypes
  * Response model for DetailScreen.
  */
 sealed class SpecificArticleResponse {
+    object Uninitialized: SpecificArticleResponse()
     object NoMatch: SpecificArticleResponse()
 
     /**
