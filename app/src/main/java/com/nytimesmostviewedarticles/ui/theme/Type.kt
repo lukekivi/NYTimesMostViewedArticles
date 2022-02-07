@@ -61,9 +61,14 @@ val LightTypography = Typography(
         fontSize = 18.sp,
         color = Black
     ),
+    h5 = TextStyle(             // network connection lost
+        fontFamily = FontFamily.SansSerif,
+        textAlign = TextAlign.Center,
+        fontSize = 14.sp,
+        color = Black
+    ),
     h6 = TextStyle(             // errors
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontFamily = FontFamily.SansSerif,
         textAlign = TextAlign.Center,
         fontSize = 24.sp,
         color = Black

@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.nytimesmostviewedarticles.Destinations
 import com.nytimesmostviewedarticles.datatypes.SpecificArticleResponse
+import com.nytimesmostviewedarticles.network.NetworkConnectionService
+import com.nytimesmostviewedarticles.network.NetworkStatus
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.screens.DetailScreenContent
 import com.nytimesmostviewedarticles.ui.screens.DetailScreenData
@@ -21,10 +23,13 @@ interface DetailScreenViewModel {
 @HiltViewModel
 class DetailScreenViewModelImpl @Inject constructor(
     private val nyTimesRepository: NyTimesRepository,
+    private val networkConnectionService: NetworkConnectionService,
     savedStateHandle: SavedStateHandle
 ) : DetailScreenViewModel, ViewModel() {
 
     private val isLoadingFlow = MutableStateFlow(false)
+
+    private val networkStatusFlow: StateFlow<NetworkStatus> = networkConnectionService.networkStatusFlow as StateFlow<NetworkStatus>
 
     private val specificArticleResponseFlow =
         savedStateHandle.get<String>(Destinations.DetailScreen.ArgId)?.let { articleId ->
@@ -41,8 +46,8 @@ class DetailScreenViewModelImpl @Inject constructor(
             }
 
     override val detailScreenContentFlow: Flow<DetailScreenContent> = combine(
-        specificArticleResponseFlow, isLoadingFlow
-    ) { specificArticleResponse, isLoading ->
+        specificArticleResponseFlow, isLoadingFlow, networkStatusFlow
+    ) { specificArticleResponse, isLoading, networkStatus ->
         val detailScreenData = when (specificArticleResponse) {
             is SpecificArticleResponse.Uninitialized -> {
                 refreshAppData()
@@ -55,12 +60,15 @@ class DetailScreenViewModelImpl @Inject constructor(
 
         DetailScreenContent(
             detailScreenData = detailScreenData,
-            isLoading = isLoading
+            isLoading = isLoading,
+            networkStatus = networkStatus
         )
     }
 
     override fun refreshAppData() {
-        isLoadingFlow.value = true
-        nyTimesRepository.updateArticleData()
+        if (networkStatusFlow.value == NetworkStatus.CONNECTED) {
+            isLoadingFlow.value = true
+            nyTimesRepository.updateArticleData()
+        }
     }
 }

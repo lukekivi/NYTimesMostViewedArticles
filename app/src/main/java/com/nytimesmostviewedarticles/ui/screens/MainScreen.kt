@@ -1,8 +1,13 @@
 package com.nytimesmostviewedarticles.ui.screens
 
+import android.net.Network
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,6 +21,7 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
+import com.nytimesmostviewedarticles.network.NetworkStatus
 import com.nytimesmostviewedarticles.ui.components.*
 import com.nytimesmostviewedarticles.viewmodel.MainScreenViewModelImpl
 
@@ -41,7 +47,7 @@ fun MainScreen(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             ) {
 
                 FilterItemLazyRow(
@@ -54,8 +60,11 @@ fun MainScreen(
                     thickness = 1.dp
                 )
 
+                NetworkDisconnectedAlert(isEnabled = mainScreenContent.networkStatus != NetworkStatus.CONNECTED)
+
                 MainScreenCoreContent(
                     mainScreenData = mainScreenContent.mainScreenData,
+                    networkStatus = mainScreenContent.networkStatus,
                     onNavClick = onNavClick
                 )
             }
@@ -67,6 +76,7 @@ fun MainScreen(
 @Composable
 fun MainScreenCoreContent(
     mainScreenData: MainScreenData,
+    networkStatus: NetworkStatus,
     onNavClick: (String) -> Unit
 ) {
 
@@ -82,19 +92,28 @@ fun MainScreenCoreContent(
             }
 
             is MainScreenData.Error -> {
-                Text(
-                    text = mainScreenData.message,
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(top = 30.dp)
-                )
+                Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
+                    /**
+                     * Network connection loss is an expected error and is handled in MainScreen()
+                     */
+                    if (networkStatus == NetworkStatus.CONNECTED) {
+                        Text(
+                            text = mainScreenData.message,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(top = 30.dp)
+                        )
+                    }
+                }
             }
 
             is MainScreenData.Empty -> {
-                Text(
-                    text = stringResource(R.string.main_screen_empty_data),
-                    style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(top = 30.dp)
-                )
+                Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
+                    Text(
+                        text = stringResource(R.string.main_screen_empty_data),
+                        style = MaterialTheme.typography.h6,
+                        modifier = Modifier.padding(top = 30.dp)
+                    )
+                }
             }
 
             is MainScreenData.Success -> {
@@ -121,13 +140,15 @@ fun MainScreenCoreContent(
 private val DEFAULT_MAIN_SCREEN_CONTENT = MainScreenContent(
     filterItemList = listOf(),
     mainScreenData = MainScreenData.Uninitialized,
-    isLoading = false
+    isLoading = false,
+    networkStatus = NetworkStatus.CONNECTED
 )
 
 data class MainScreenContent(
     val filterItemList: List<FilterItem>,
     val mainScreenData: MainScreenData,
-    val isLoading: Boolean
+    val isLoading: Boolean,
+    val networkStatus: NetworkStatus
 )
 
 sealed class MainScreenData {

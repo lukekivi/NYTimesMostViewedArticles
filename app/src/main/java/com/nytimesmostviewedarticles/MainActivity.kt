@@ -15,10 +15,12 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.nytimesmostviewedarticles.network.NetworkConnectionService
 import com.nytimesmostviewedarticles.ui.screens.DetailScreen
 import com.nytimesmostviewedarticles.ui.screens.MainScreen
 import com.nytimesmostviewedarticles.ui.theme.NYTimesTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 sealed class Destinations(val route: String) {
     object MainScreen: Destinations("MainScreen")
@@ -36,7 +38,10 @@ sealed class Destinations(val route: String) {
 
 @ExperimentalCoilApi
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
+
+    @Inject lateinit var networkConnectionService: NetworkConnectionService
+
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +52,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        networkConnectionService.registerCallback()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        networkConnectionService.unRegisterCallback()
+        super.onPause()
     }
 
     @ExperimentalAnimationApi

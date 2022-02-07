@@ -2,19 +2,19 @@ package com.nytimesmostviewedarticles.viewmodel
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
+import com.nytimesmostviewedarticles.network.NetworkConnectionService
+import com.nytimesmostviewedarticles.network.NetworkStatus
 import com.nytimesmostviewedarticles.network.NyTimesRepository
 import com.nytimesmostviewedarticles.ui.components.ArticleCardData
 import com.nytimesmostviewedarticles.ui.components.FilterItem
 import com.nytimesmostviewedarticles.ui.screens.MainScreenContent
 import com.nytimesmostviewedarticles.ui.screens.MainScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 interface MainScreenViewModel {
@@ -33,12 +33,15 @@ interface MainScreenViewModel {
 
 @HiltViewModel
 class MainScreenViewModelImpl @Inject constructor(
-    private val nyTimesRepository: NyTimesRepository
+    private val nyTimesRepository: NyTimesRepository,
+    networkConnectionService: NetworkConnectionService
 ) : ViewModel(), MainScreenViewModel {
 
     private val filterItemListFlow = MutableStateFlow(FilterOptions.values().map { FilterItem(it) }.toList())
 
     private val isLoadingFlow = MutableStateFlow(false)
+
+    private val networkStatusFlow: StateFlow<NetworkStatus> = networkConnectionService.networkStatusFlow
 
     private val articleDataResponseFlow: Flow<ArticleDataResponse> =
         nyTimesRepository.articleDataResponse.onEach {
@@ -48,10 +51,9 @@ class MainScreenViewModelImpl @Inject constructor(
             isLoadingFlow.value = false
         }
 
-
     override val mainScreenContent: Flow<MainScreenContent> = combine(
-        articleDataResponseFlow, isLoadingFlow, filterItemListFlow
-    ) { articleDataResponse, isLoading, filterItemList ->
+        articleDataResponseFlow, isLoadingFlow, filterItemListFlow, networkStatusFlow
+    ) { articleDataResponse, isLoading, filterItemList, networkStatus ->
         val mainScreenData = when (articleDataResponse) {
             is ArticleDataResponse.Error -> {
                 MainScreenData.Error(message = articleDataResponse.message)
@@ -82,13 +84,15 @@ class MainScreenViewModelImpl @Inject constructor(
             }
         }
 
-        MainScreenContent(filterItemList, mainScreenData, isLoading)
+        MainScreenContent(filterItemList, mainScreenData, isLoading, networkStatus)
     }
 
 
     override fun userRefreshArticles() {
-        isLoadingFlow.value = true
-        nyTimesRepository.updateArticleData()
+        if (networkStatusFlow.value == NetworkStatus.CONNECTED) {
+            isLoadingFlow.value = true
+            nyTimesRepository.updateArticleData()
+        }
     }
 
 

@@ -2,8 +2,9 @@ package com.nytimesmostviewedarticles.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -31,7 +32,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.MediaDataForUI
+import com.nytimesmostviewedarticles.network.NetworkStatus
 import com.nytimesmostviewedarticles.ui.components.FacetsLazyRow
+import com.nytimesmostviewedarticles.ui.components.NetworkDisconnectedAlert
 import com.nytimesmostviewedarticles.ui.components.NyTimesTopBar
 import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
 
@@ -43,7 +46,9 @@ fun DetailScreen(
     detailsScreenViewModel: DetailScreenViewModelImpl = hiltViewModel(),
     onNavClick: () -> Unit
 ) {
-    val detailScreenDataContent by detailsScreenViewModel.detailScreenContentFlow.collectAsState(DEFAULT_DETAIL_SCREEN_CONTENT)
+    val detailScreenDataContent by detailsScreenViewModel.detailScreenContentFlow.collectAsState(
+        DEFAULT_DETAIL_SCREEN_CONTENT
+    )
 
     Scaffold(
         topBar = {
@@ -56,12 +61,23 @@ fun DetailScreen(
             state = rememberSwipeRefreshState(isRefreshing = detailScreenDataContent.isLoading),
             onRefresh = { detailsScreenViewModel.refreshAppData() }
         ) {
+
             Box(
                 contentAlignment = Alignment.TopCenter,
                 modifier = Modifier.fillMaxSize()
             ) {
-                if (!detailScreenDataContent.isLoading) {
-                    DetailScreenContent(detailScreenData = detailScreenDataContent.detailScreenData)
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(state = rememberScrollState())
+                ) {
+                    NetworkDisconnectedAlert(isEnabled = detailScreenDataContent.networkStatus != NetworkStatus.CONNECTED)
+
+                    if (!detailScreenDataContent.isLoading) {
+                        DetailScreenContent(detailScreenData = detailScreenDataContent.detailScreenData)
+                    }
                 }
             }
         }
@@ -95,84 +111,74 @@ fun DetailScreenContent(
         is DetailScreenData.Success -> {
             val articleData = detailScreenData.articleData
 
-            LazyColumn(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Text(
+                text = articleData.title,
+                style = MaterialTheme.typography.h2,
                 modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                item {
+                    .fillMaxWidth(.9f)
+                    .padding(top = 30.dp)
+            )
 
-                    Text(
-                        text = articleData.title,
-                        style = MaterialTheme.typography.h2,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 30.dp)
-                    )
+            Divider(
+                color = MaterialTheme.colors.primaryVariant,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth(.9f)
+                    .padding(top = 20.dp, bottom = 20.dp)
+            )
 
-                    Divider(
-                        color = MaterialTheme.colors.primaryVariant,
-                        thickness = 1.dp,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 20.dp, bottom = 20.dp)
-                    )
+            /*          Image and caption         */
+            DetailScreenImage(mediaDataForUI = articleData.media)
 
-                    /*          Image and caption         */
-                    DetailScreenImage(mediaDataForUI = articleData.media)
+            Text(
+                text = stringResource(R.string.detail_screen_byline) + articleData.byline,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier
+                    .fillMaxWidth(.9f)
+                    .padding(top = 20.dp)
+            )
 
-                    Text(
-                        text = stringResource(R.string.detail_screen_byline) + articleData.byline,
-                        style = MaterialTheme.typography.h3,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 20.dp)
-                    )
+            Text(
+                text = stringResource(R.string.detail_screen_published_by) + articleData.publishedDate
+                        + stringResource(R.string.detail_screen_updated) + articleData.updated,
+                style = MaterialTheme.typography.subtitle2,
+                modifier = Modifier
+                    .fillMaxWidth(.9f)
+            )
 
-                    Text(
-                        text = stringResource(R.string.detail_screen_published_by) + articleData.publishedDate
-                                + stringResource(R.string.detail_screen_updated) + articleData.updated,
-                        style = MaterialTheme.typography.subtitle2,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                    )
+            Text(
+                text = articleData.abstract,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier
+                    .fillMaxWidth(.9f)
+                    .padding(top = 20.dp)
+            )
 
-                    Text(
-                        text = articleData.abstract,
-                        style = MaterialTheme.typography.body1,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 20.dp)
-                    )
+            TitledFacetLazyRow(
+                title = stringResource(R.string.detail_screen_details),
+                facets = articleData.descriptors,
+                modifier = Modifier.padding(top = 20.dp)
+            )
 
-                    TitledFacetLazyRow(
-                        title = stringResource(R.string.detail_screen_details),
-                        facets = articleData.descriptors,
-                        modifier = Modifier.padding(top = 20.dp)
-                    )
+            TitledFacetLazyRow(
+                title = stringResource(R.string.detail_screen_geography),
+                facets = articleData.geographyFacets,
+                modifier = Modifier.padding(top = 20.dp)
+            )
 
-                    TitledFacetLazyRow(
-                        title = stringResource(R.string.detail_screen_geography),
-                        facets = articleData.geographyFacets,
-                        modifier = Modifier.padding(top = 20.dp)
-                    )
+            Divider(
+                color = MaterialTheme.colors.primaryVariant,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth(.9f)
+                    .padding(top = 30.dp, bottom = 30.dp)
+            )
 
-                    Divider(
-                        color = MaterialTheme.colors.primaryVariant,
-                        thickness = 1.dp,
-                        modifier = Modifier
-                            .fillMaxWidth(.9f)
-                            .padding(top = 30.dp, bottom = 30.dp)
-                    )
-
-                    HyperlinkedText(
-                        url = articleData.url,
-                        text = stringResource(R.string.detail_screen_read_more),
-                        modifier = Modifier.padding(bottom = 30.dp)
-                    )
-                }
-            }
+            HyperlinkedText(
+                url = articleData.url,
+                text = stringResource(R.string.detail_screen_read_more),
+                modifier = Modifier.padding(bottom = 30.dp)
+            )
         }
     }
 }
@@ -295,21 +301,23 @@ fun BackButtonIcon(
 
 data class DetailScreenContent(
     val detailScreenData: DetailScreenData,
-    val isLoading: Boolean
+    val isLoading: Boolean,
+    val networkStatus: NetworkStatus
 )
 
 sealed class DetailScreenData {
-    object NoMatch: DetailScreenData()
-    object Uninitialized: DetailScreenData()
+    object NoMatch : DetailScreenData()
+    object Uninitialized : DetailScreenData()
 
     /**
      * Valid data is available to be displayed.
      */
-    class Success(val articleData: ArticleData): DetailScreenData()
-    class Error(val message: String): DetailScreenData()
+    class Success(val articleData: ArticleData) : DetailScreenData()
+    class Error(val message: String) : DetailScreenData()
 }
 
 private val DEFAULT_DETAIL_SCREEN_CONTENT = DetailScreenContent(
     detailScreenData = DetailScreenData.Uninitialized,
-    isLoading = false
+    isLoading = false,
+    networkStatus = NetworkStatus.CONNECTED
 )
