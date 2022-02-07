@@ -22,7 +22,7 @@ interface MainScreenViewModel {
     /**
      * Updates [mainScreenContent] with up to date article data.
      */
-    fun userRefreshArticles()
+    fun refreshArticleData()
 
     /**
      * Update filter which is applied to [mainScreenContent] article data.
@@ -58,7 +58,7 @@ class MainScreenViewModelImpl @Inject constructor(
                 MainScreenData.Error(message = articleDataResponse.message)
             }
             is ArticleDataResponse.Uninitialized -> {
-                nyTimesRepository.updateArticleData()
+                refreshArticleData()
                 MainScreenData.Uninitialized
             }
             is ArticleDataResponse.Success -> {
@@ -87,7 +87,7 @@ class MainScreenViewModelImpl @Inject constructor(
     }
 
 
-    override fun userRefreshArticles() {
+    override fun refreshArticleData() {
         if (networkStatusFlow.value == NetworkStatus.CONNECTED) {
             isLoadingFlow.value = true
             nyTimesRepository.updateArticleData()

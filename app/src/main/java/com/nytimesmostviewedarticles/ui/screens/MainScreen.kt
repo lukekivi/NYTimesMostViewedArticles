@@ -1,5 +1,6 @@
 package com.nytimesmostviewedarticles.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +36,7 @@ fun MainScreen(
 
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing = mainScreenContent.isLoading),
-        onRefresh = { mainScreenViewModel.userRefreshArticles() },
+        onRefresh = { mainScreenViewModel.refreshArticleData() },
         indicatorPadding = PaddingValues(top = 200.dp)
     ) {
 
@@ -61,7 +63,6 @@ fun MainScreen(
 
                 MainScreenCoreContent(
                     mainScreenData = mainScreenContent.mainScreenData,
-                    networkStatus = mainScreenContent.networkStatus,
                     onNavClick = onNavClick
                 )
             }
@@ -73,27 +74,40 @@ fun MainScreen(
 @Composable
 fun MainScreenCoreContent(
     mainScreenData: MainScreenData,
-    networkStatus: NetworkStatus,
     onNavClick: (String) -> Unit
 ) {
 
     Box(
         contentAlignment = Alignment.TopCenter,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        when (mainScreenData) {
-            is MainScreenData.Uninitialized -> {
-                LinearProgressIndicator(
-                    modifier = Modifier.padding(top = 60.dp)
-                )
-            }
 
-            is MainScreenData.Error -> {
-                Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
-                    /**
-                     * Network connection loss is an expected error and is handled in MainScreen()
-                     */
-                    if (networkStatus == NetworkStatus.CONNECTED) {
+            when (mainScreenData) {
+
+                is MainScreenData.Uninitialized -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(state = rememberScrollState())
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_the_new_york_times_alt),
+                            contentDescription = null,
+                            alpha = 0.5f
+                        )
+                    }
+                }
+
+                is MainScreenData.Error -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(state = rememberScrollState())
+                    ) {
                         Text(
                             text = mainScreenData.message,
                             style = MaterialTheme.typography.h6,
@@ -101,37 +115,40 @@ fun MainScreenCoreContent(
                         )
                     }
                 }
-            }
 
-            is MainScreenData.Empty -> {
-                Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
-                    Text(
-                        text = stringResource(R.string.main_screen_empty_data),
-                        style = MaterialTheme.typography.h6,
-                        modifier = Modifier.padding(top = 30.dp)
-                    )
-                }
-            }
-
-            is MainScreenData.Success -> {
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(mainScreenData.articleRowDataList) { data ->
-                        ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
-
-                        Divider(
-                            color = MaterialTheme.colors.primaryVariant,
-                            modifier = Modifier
-                                .padding(start = 20.dp, end = 20.dp)
-                                .fillMaxWidth()
+                is MainScreenData.Empty -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(state = rememberScrollState())
+                    ) {
+                        Text(
+                            text = stringResource(R.string.main_screen_empty_data),
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(top = 30.dp)
                         )
+                    }
+                }
+
+                is MainScreenData.Success -> {
+                    LazyColumn(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(mainScreenData.articleRowDataList) { data ->
+                            ArticleCard(articleCardData = data, onClick = { onNavClick(data.id) })
+
+                            Divider(
+                                color = MaterialTheme.colors.primaryVariant,
+                                modifier = Modifier
+                                    .padding(start = 20.dp, end = 20.dp)
+                                    .fillMaxWidth()
+                            )
+                        }
                     }
                 }
             }
         }
-    }
-
 }
 
 private val DEFAULT_MAIN_SCREEN_CONTENT = MainScreenContent(
@@ -149,8 +166,9 @@ data class MainScreenContent(
 )
 
 sealed class MainScreenData {
-    object Empty: MainScreenData()
-    object Uninitialized: MainScreenData()
+    object Empty : MainScreenData()
+    object Uninitialized : MainScreenData()
+
     /**
      * Valid, non-empty data is available to be displayed.
      */

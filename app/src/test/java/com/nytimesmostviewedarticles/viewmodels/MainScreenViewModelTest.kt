@@ -84,7 +84,7 @@ class MainScreenViewModelTest {
                 val firstItemData = (firstItem.mainScreenData as MainScreenData.Success)
                 assert(!firstItem.isLoading)
                 assert(firstItemData.articleRowDataList[0].id == FakeNetworkResults.id)
-                mainScreenViewModel.userRefreshArticles()
+                mainScreenViewModel.refreshArticleData()
 
                 val secondItem = awaitItem()
                 val secondItemData = (secondItem.mainScreenData as MainScreenData.Success)
@@ -175,7 +175,7 @@ class MainScreenViewModelTest {
     }
 
     @Test
-    fun `when networkStatus is not Connected then when userRefreshArticles is invoked article data is not updated`() {
+    fun `when networkStatus is not Connected then when refreshArticleData is invoked article data is not updated`() {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
         fakeNetworkStatusFlow.value = NetworkStatus.DISCONNECTED
 
@@ -190,7 +190,7 @@ class MainScreenViewModelTest {
                 val itemOne = awaitItem()
                 assert(itemOne.mainScreenData is MainScreenData.Success && itemOne.networkStatus == NetworkStatus.DISCONNECTED)
 
-                mainScreenViewModel.userRefreshArticles()
+                mainScreenViewModel.refreshArticleData()
 
                 /**
                  * emit a value in order to check if mainScreenData changed
