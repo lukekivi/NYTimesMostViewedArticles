@@ -8,19 +8,22 @@ import com.nytimesmostviewedarticles.ui.screens.DetailScreenData
 import com.nytimesmostviewedarticles.viewmodel.DetailScreenViewModelImpl
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class DetailScreenViewModelTest {
     private lateinit var detailScreenViewModelImpl: DetailScreenViewModelImpl
     private lateinit var fakeNyTimesRepository: NyTimesRepository
     private lateinit var fakeSavedStateHandle: SavedStateHandle
 
-    private val articleId = ""
+    private val articleId = "mock article id"
 
     @Before
     fun setup() {
@@ -41,8 +44,8 @@ class DetailScreenViewModelTest {
         )
 
         runBlocking {
-            detailScreenViewModelImpl.getArticleDetail.test {
-                assert(awaitItem() is DetailScreenData.Success)
+            detailScreenViewModelImpl.detailScreenContentFlow.test {
+                assert(awaitItem().detailScreenData is DetailScreenData.Success)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -61,8 +64,8 @@ class DetailScreenViewModelTest {
         )
 
         runBlocking {
-            detailScreenViewModelImpl.getArticleDetail.test {
-                assert(awaitItem() is DetailScreenData.NoMatch)
+            detailScreenViewModelImpl.detailScreenContentFlow.test {
+                assert(awaitItem().detailScreenData is DetailScreenData.NoMatch)
                 cancelAndIgnoreRemainingEvents()
             }
         }
@@ -81,9 +84,36 @@ class DetailScreenViewModelTest {
         )
 
         runBlocking {
-            detailScreenViewModelImpl.getArticleDetail.test {
-                val item = (awaitItem() as DetailScreenData.Error)
+            detailScreenViewModelImpl.detailScreenContentFlow.test {
+                val item = (awaitItem().detailScreenData as DetailScreenData.Error)
                 assert(item.message == FakeRepoResults.errorMessage)
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when the repo returns uninitialized the viewModel calls refreshAppData and is emits Success state`() {
+        val fakeStateFlow =
+            MutableStateFlow<SpecificArticleResponse>(SpecificArticleResponse.Uninitialized)
+
+        every { fakeSavedStateHandle.get<String>(any()) }.returns(articleId)
+        every { fakeNyTimesRepository.getSpecificArticleData(articleId) }.returns(fakeStateFlow)
+        every { fakeNyTimesRepository.updateArticleData() }.coAnswers {
+            fakeStateFlow.value = FakeRepoResults.specificArticleSuccess
+        }
+
+        detailScreenViewModelImpl = DetailScreenViewModelImpl(
+            nyTimesRepository = fakeNyTimesRepository,
+            savedStateHandle = fakeSavedStateHandle
+        )
+
+        runBlocking {
+            detailScreenViewModelImpl.detailScreenContentFlow.test {
+                assert(awaitItem().detailScreenData is DetailScreenData.Uninitialized)
+
+                assert(awaitItem().detailScreenData is DetailScreenData.Success)
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -102,9 +132,9 @@ class DetailScreenViewModelTest {
                 savedStateHandle = fakeSavedStateHandle
             )
 
-            val item = detailScreenViewModelImpl.getArticleDetail.take(1).first()
+            val item = detailScreenViewModelImpl.detailScreenContentFlow.take(1).first()
 
-            assert(item is DetailScreenData.Error)
+            assert(item.detailScreenData is DetailScreenData.Error)
         }
     }
 }

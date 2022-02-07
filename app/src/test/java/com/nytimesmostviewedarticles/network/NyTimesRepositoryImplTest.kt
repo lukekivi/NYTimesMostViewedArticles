@@ -123,11 +123,41 @@ class NyTimesRepositoryImplTest {
             FakeNetworkResults.success
         )
 
-        nyTimesRepositoryImpl.updateArticleData()
-
         runTest {
             nyTimesRepositoryImpl.getSpecificArticleData("INCORRECT").test {
+                assert(awaitItem() is SpecificArticleResponse.Uninitialized)
+
+                nyTimesRepositoryImpl.updateArticleData()
+
                 assert(awaitItem() is SpecificArticleResponse.NoMatch)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when articleDataResponse is uninitialized and getSpecificArticleData is called it emits Uninitialized value`() {
+        runTest {
+            nyTimesRepositoryImpl.getSpecificArticleData(FakeNetworkResults.id).test {
+                assert(awaitItem() is SpecificArticleResponse.Uninitialized)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `when articleDataResponse is uninitialized, then is updated, getSpecificArticleData emits Uninitialized and then Success value`() {
+
+        runTest {
+            nyTimesRepositoryImpl.getSpecificArticleData(FakeNetworkResults.id).test {
+                assert(awaitItem() is SpecificArticleResponse.Uninitialized)
+
+                coEvery { mockNyTimesArticleService.getArticlesFromLastWeek(any()) }.returns(
+                    FakeNetworkResults.success
+                )
+                nyTimesRepositoryImpl.updateArticleData()
+
+                assert(awaitItem() is SpecificArticleResponse.Success)
                 cancelAndIgnoreRemainingEvents()
             }
         }

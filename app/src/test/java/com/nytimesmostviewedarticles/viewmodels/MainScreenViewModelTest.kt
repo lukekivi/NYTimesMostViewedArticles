@@ -72,9 +72,9 @@ class MainScreenViewModelTest {
             fakeStateFlow.value = FakeRepoResults.articleDataSuccessTwo
         }
 
-        runBlocking {
-            mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository)
+        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository)
 
+        runBlocking {
             mainScreenViewModel.mainScreenContent.test {
 
                 val firstItem = awaitItem()
