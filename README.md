@@ -46,7 +46,8 @@ The queried article data includes media. This app is only concerned with exposin
 - In the future it is important to implement some UI tests.
 
 ## Future Changes
-- Right now if network connection is unavailable at start up the error message from retrofit is displayed after connection is gained again. This needs to be solved.
+- In MainScreenCoreContent() each non-success state builds its own column. This should be simplified.  
+- Persist basic UI data through process death via SavedStateHandle   
 - Add a period selector.
 - If the API supplied more articles allowing the user to sort based on clicking the article detail bubbles would be cool. With 15 articles it would be mostly useless.
 - Animate differences upon filtering the row data.
