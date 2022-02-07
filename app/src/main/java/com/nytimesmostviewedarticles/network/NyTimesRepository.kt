@@ -1,7 +1,6 @@
 package com.nytimesmostviewedarticles.network
 
 import com.nytimesmostviewedarticles.datatypes.*
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,15 +36,14 @@ interface NyTimesRepository {
 class NyTimesRepositoryImpl
 @Inject constructor(
     private val nyTimesApiService: NyTimesApiService,
-    private val externalScope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher
+    private val coroutineScope: CoroutineScope,
 ) : NyTimesRepository {
     private val _articleDataResponse =
         MutableStateFlow<ArticleDataResponse>(ArticleDataResponse.Uninitialized)
     override val articleDataResponse: StateFlow<ArticleDataResponse> = _articleDataResponse
 
     override fun updateArticleData() {
-        externalScope.launch(dispatcher) {
+        coroutineScope.launch {
             try {
                 _articleDataResponse.emit(
                     ArticleDataResponse.Success(
@@ -65,29 +63,20 @@ class NyTimesRepositoryImpl
         }
     }
 
-    override fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse> {
-        // Refresh article data if need be
-        when (_articleDataResponse.value) {
-            is ArticleDataResponse.Error,
-            is ArticleDataResponse.Uninitialized -> updateArticleData()
-            is ArticleDataResponse.Success -> Unit
-        }
-
-        // Return results mapped to SpecificDataResponse
-        return _articleDataResponse.map { articleDataResponse ->
+    override fun getSpecificArticleData(id: String): Flow<SpecificArticleResponse> =
+        _articleDataResponse.map { articleDataResponse ->
             when (articleDataResponse) {
                 is ArticleDataResponse.Success -> {
                     articleDataResponse.articleDataList.firstOrNull { it.id == id }
                         ?.let { SpecificArticleResponse.Success(it) }
                         ?: SpecificArticleResponse.NoMatch
                 }
-                is ArticleDataResponse.Uninitialized -> SpecificArticleResponse.NoMatch
+                is ArticleDataResponse.Uninitialized -> SpecificArticleResponse.Uninitialized
                 is ArticleDataResponse.Error -> {
                     SpecificArticleResponse.Error(articleDataResponse.message)
                 }
             }
         }
-    }
 
     private fun ViewedArticle.toArticleData(): ArticleData {
         val media = media
@@ -110,7 +99,7 @@ class NyTimesRepositoryImpl
         return ArticleData(
             id = id,
             url = url,
-            publishedDate = published_date,
+            publishedDate = publishedDate,
             section = section,
             updated = updated,
             byline = byline,
@@ -119,8 +108,8 @@ class NyTimesRepositoryImpl
             descriptors = listOf(
                 section,
                 subsection
-            ) + des_facet,
-            geographyFacets = geo_facet,
+            ) + desFacet,
+            geographyFacets = geoFacet,
             media = mediaDataForUI
         )
     }

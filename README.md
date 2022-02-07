@@ -42,12 +42,12 @@ The queried article data includes media. This app is only concerned with exposin
 |      Flows        |  Accompanist Navigation Animation  | 
 
 - The core logic of this app lies within the repository and the two ViewModels. Those are thoroughly tested.
+- Need to add tests for NetworkConnectionService and NetworkConnectionReceiver.
 - In the future it is important to implement some UI tests.
 
 ## Future Changes
-- Right now if network connection is unavailable the error message from retrofit is displayed. In the future I would like to more gracefully handle loss of internet by:
-  - adding Room persistence for a local backup of data acquired from the API and
-  - monitoring network connection in app in order to alert users of a loss of connection.
+- In MainScreenCoreContent() each non-success state builds its own column. This should be simplified.  
+- Persist basic UI data through process death via SavedStateHandle   
 - Add a period selector.
 - If the API supplied more articles allowing the user to sort based on clicking the article detail bubbles would be cool. With 15 articles it would be mostly useless.
 - Animate differences upon filtering the row data.

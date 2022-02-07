@@ -10,7 +10,7 @@ data class NetworkResponse(
 data class ViewedArticle(
     @Json(name = "url") val url: String,
     @Json(name = "id") val id: String,
-    @Json(name = "published_date") val published_date: String,
+    @Json(name = "published_date") val publishedDate: String,
     @Json(name = "updated") val updated: String,
     @Json(name = "section") val section: String,
     @Json(name = "subsection") val subsection: String,
@@ -18,8 +18,8 @@ data class ViewedArticle(
     @Json(name = "byline") val byline: String,
     @Json(name = "title") val title: String,
     @Json(name = "abstract") val abstract: String,
-    @Json(name = "des_facet") val des_facet: List<String>,
-    @Json(name = "geo_facet") val geo_facet: List<String>,
+    @Json(name = "des_facet") val desFacet: List<String>,
+    @Json(name = "geo_facet") val geoFacet: List<String>,
     @Json(name = "media") val media: List<MediaData>,
 )
 

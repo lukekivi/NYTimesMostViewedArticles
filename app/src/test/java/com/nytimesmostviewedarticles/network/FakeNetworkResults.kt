@@ -18,7 +18,7 @@ object FakeNetworkResults {
             ViewedArticle(
                 url = "url_1",
                 id = id,
-                published_date = "published_data_1",
+                publishedDate = "published_data_1",
                 updated = "updated_1",
                 section = "section_1",
                 subsection = "subsection_1",
@@ -26,8 +26,8 @@ object FakeNetworkResults {
                 byline = "byline_1",
                 title = "title_1",
                 abstract = "abstract_1",
-                des_facet = listOf("des_facet_1"),
-                geo_facet = listOf("geo_facet_1"),
+                desFacet = listOf("des_facet_1"),
+                geoFacet = listOf("geo_facet_1"),
                 media = listOf(
                     MediaData(
                         type = "image",
@@ -48,7 +48,7 @@ object FakeNetworkResults {
             ViewedArticle(
                 url = "url_2",
                 id = idTwo,
-                published_date = "published_data_",
+                publishedDate = "published_data_",
                 updated = "updated_2",
                 section = "section_2",
                 subsection = "subsection_2",
@@ -56,8 +56,8 @@ object FakeNetworkResults {
                 byline = "byline_2",
                 title = "title_2",
                 abstract = "abstract_2",
-                des_facet = listOf("des_facet_2"),
-                geo_facet = listOf("geo_facet_2"),
+                desFacet = listOf("des_facet_2"),
+                geoFacet = listOf("geo_facet_2"),
                 media = listOf(
                     MediaData(
                         type = "image",
