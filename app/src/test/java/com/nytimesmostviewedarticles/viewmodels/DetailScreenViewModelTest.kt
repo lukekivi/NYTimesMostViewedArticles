@@ -20,9 +20,9 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class DetailScreenViewModelTest {
     private lateinit var detailScreenViewModelImpl: DetailScreenViewModelImpl
-    private lateinit var fakeNyTimesRepository: NyTimesRepository
-    private lateinit var fakeSavedStateHandle: SavedStateHandle
-    private lateinit var fakeNetworkConnectionService: NetworkConnectionService
+    private lateinit var mockNyTimesRepository: NyTimesRepository
+    private lateinit var mockSavedStateHandle: SavedStateHandle
+    private lateinit var mockNetworkConnectionService: NetworkConnectionService
 
     private val articleId = "mock article id"
 
@@ -31,21 +31,21 @@ class DetailScreenViewModelTest {
 
     @Before
     fun setup() {
-        fakeNyTimesRepository = mockk()
-        fakeSavedStateHandle = mockk()
-        fakeNetworkConnectionService = mockk()
+        mockNyTimesRepository = mockk()
+        mockSavedStateHandle = mockk()
+        mockNetworkConnectionService = mockk()
 
-        every { fakeNetworkConnectionService.networkStatusFlow }.returns(fakeNetworkStatusFlow)
-        every { fakeNyTimesRepository.getSpecificArticleData(articleId) }.returns(fakeSpecificArticleResponseFlow)
-        every { fakeSavedStateHandle.get<String>(any()) }.returns(articleId)
+        every { mockNetworkConnectionService.networkStatusFlow }.returns(fakeNetworkStatusFlow)
+        every { mockNyTimesRepository.getSpecificArticleData(articleId) }.returns(fakeSpecificArticleResponseFlow)
+        every { mockSavedStateHandle.get<String>(any()) }.returns(articleId)
     }
 
     @Test
     fun `when the repo returns a match the viewModel emits a success state`() {
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -61,9 +61,9 @@ class DetailScreenViewModelTest {
         fakeSpecificArticleResponseFlow.value = SpecificArticleResponse.NoMatch
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -79,9 +79,9 @@ class DetailScreenViewModelTest {
         fakeSpecificArticleResponseFlow.value = FakeRepoResults.specificArticleError
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -98,14 +98,14 @@ class DetailScreenViewModelTest {
     fun `when the repo returns uninitialized the viewModel calls refreshAppData and is emits Success state`() {
         fakeSpecificArticleResponseFlow.value = SpecificArticleResponse.Uninitialized
 
-        every { fakeNyTimesRepository.updateArticleData() }.coAnswers {
+        every { mockNyTimesRepository.updateArticleData() }.coAnswers {
             fakeSpecificArticleResponseFlow.value = FakeRepoResults.specificArticleSuccess
         }
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -121,14 +121,14 @@ class DetailScreenViewModelTest {
 
     @Test
     fun `when the savedStateHandle fails to find a string the viewModel emits an error state`() {
-        every { fakeSavedStateHandle.get<String>(any()) }.returns(null)
+        every { mockSavedStateHandle.get<String>(any()) }.returns(null)
 
 
         runBlocking {
             detailScreenViewModelImpl = DetailScreenViewModelImpl(
-                nyTimesRepository = fakeNyTimesRepository,
-                savedStateHandle = fakeSavedStateHandle,
-                networkConnectionService = fakeNetworkConnectionService
+                nyTimesRepository = mockNyTimesRepository,
+                savedStateHandle = mockSavedStateHandle,
+                networkConnectionService = mockNetworkConnectionService
             )
 
             val item = detailScreenViewModelImpl.detailScreenContentFlow.take(1).first()
@@ -143,9 +143,9 @@ class DetailScreenViewModelTest {
         fakeNetworkStatusFlow.value = NetworkStatus.DISCONNECTED
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -161,9 +161,9 @@ class DetailScreenViewModelTest {
         fakeSpecificArticleResponseFlow.value = FakeRepoResults.specificArticleSuccess
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -180,9 +180,9 @@ class DetailScreenViewModelTest {
         fakeNetworkStatusFlow.value = NetworkStatus.UNINITIALIZED
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {
@@ -198,14 +198,14 @@ class DetailScreenViewModelTest {
         fakeSpecificArticleResponseFlow.value = FakeRepoResults.specificArticleSuccess
         fakeNetworkStatusFlow.value = NetworkStatus.DISCONNECTED
 
-        every { fakeNyTimesRepository.updateArticleData() }.answers {
+        every { mockNyTimesRepository.updateArticleData() }.answers {
             fakeSpecificArticleResponseFlow.value = FakeRepoResults.specificArticleError
         }
 
         detailScreenViewModelImpl = DetailScreenViewModelImpl(
-            nyTimesRepository = fakeNyTimesRepository,
-            savedStateHandle = fakeSavedStateHandle,
-            networkConnectionService = fakeNetworkConnectionService
+            nyTimesRepository = mockNyTimesRepository,
+            savedStateHandle = mockSavedStateHandle,
+            networkConnectionService = mockNetworkConnectionService
         )
 
         runBlocking {

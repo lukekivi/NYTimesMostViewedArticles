@@ -18,30 +18,30 @@ import org.junit.Test
 
 class MainScreenViewModelTest {
     private lateinit var mainScreenViewModel: MainScreenViewModelImpl
-    private lateinit var fakeNyTimesRepository: NyTimesRepository
-    private lateinit var fakeNetworkConnectionService: NetworkConnectionService
+    private lateinit var mockNyTimesRepository: NyTimesRepository
+    private lateinit var mockNetworkConnectionService: NetworkConnectionService
 
     private val fakeNetworkStatusFlow = MutableStateFlow(NetworkStatus.CONNECTED)
     private val fakeArticleResponseFlow = MutableStateFlow<ArticleDataResponse>(ArticleDataResponse.Uninitialized)
 
     @Before
     fun setup() {
-        fakeNyTimesRepository = mockk()
-        fakeNetworkConnectionService = mockk()
+        mockNyTimesRepository = mockk()
+        mockNetworkConnectionService = mockk()
 
-        every { fakeNetworkConnectionService.networkStatusFlow }.returns(fakeNetworkStatusFlow)
-        every { fakeNyTimesRepository.articleDataResponse }.returns(fakeArticleResponseFlow)
+        every { mockNetworkConnectionService.networkStatusFlow }.returns(fakeNetworkStatusFlow)
+        every { mockNyTimesRepository.articleDataResponse }.returns(fakeArticleResponseFlow)
 
     }
 
     @Test
     fun `when the viewModel receives uninitialized data it requests an initialization and receives a success response`() {
-        every { fakeNyTimesRepository.updateArticleData() }.answers {
+        every { mockNyTimesRepository.updateArticleData() }.answers {
             fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
         }
 
         runBlocking {
-            mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+            mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
             mainScreenViewModel.mainScreenContent.test {
                 val firstItem = awaitItem()
@@ -56,7 +56,7 @@ class MainScreenViewModelTest {
     @Test
     fun `when the viewModel receives an error response from the repo it emits an error value`() {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataError
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {
@@ -71,11 +71,11 @@ class MainScreenViewModelTest {
     fun `when user refreshes article viewModel asks for an update then it is updated`() {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
 
-        every { fakeNyTimesRepository.updateArticleData() }.answers {
+        every { mockNyTimesRepository.updateArticleData() }.answers {
             fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccessTwo
         }
 
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {
@@ -104,7 +104,7 @@ class MainScreenViewModelTest {
     @Test
     fun `when a new filter is applied it updates the mainScreenData list of articles`() {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccessMultiple
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {
@@ -135,7 +135,7 @@ class MainScreenViewModelTest {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
         fakeNetworkStatusFlow.value = NetworkStatus.DISCONNECTED
 
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {
@@ -149,7 +149,7 @@ class MainScreenViewModelTest {
     fun `when network status is Connected then a Connected value is emitted`() {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
 
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {
@@ -164,7 +164,7 @@ class MainScreenViewModelTest {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
         fakeNetworkStatusFlow.value = NetworkStatus.UNINITIALIZED
 
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {
@@ -179,11 +179,11 @@ class MainScreenViewModelTest {
         fakeArticleResponseFlow.value = FakeRepoResults.articleDataSuccess
         fakeNetworkStatusFlow.value = NetworkStatus.DISCONNECTED
 
-        every { fakeNyTimesRepository.updateArticleData() }.answers {
+        every { mockNyTimesRepository.updateArticleData() }.answers {
             fakeArticleResponseFlow.value = FakeRepoResults.articleDataError
         }
 
-        mainScreenViewModel = MainScreenViewModelImpl(fakeNyTimesRepository, fakeNetworkConnectionService)
+        mainScreenViewModel = MainScreenViewModelImpl(mockNyTimesRepository, mockNetworkConnectionService)
 
         runBlocking {
             mainScreenViewModel.mainScreenContent.test {

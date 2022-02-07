@@ -16,11 +16,9 @@ import org.junit.Test
 class NyTimesRepositoryImplTest {
 
     private lateinit var nyTimesRepositoryImpl: NyTimesRepositoryImpl
-
     private lateinit var mockNyTimesArticleService: NyTimesApiService
 
     private val testDispatcher = StandardTestDispatcher()
-
     private val testCoroutineScope = TestScope(testDispatcher)
 
     @Before
