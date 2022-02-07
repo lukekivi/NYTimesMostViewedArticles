@@ -2,7 +2,6 @@ package com.nytimesmostviewedarticles.viewmodel
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.nytimesmostviewedarticles.R
 import com.nytimesmostviewedarticles.datatypes.ArticleData
 import com.nytimesmostviewedarticles.datatypes.ArticleDataResponse
