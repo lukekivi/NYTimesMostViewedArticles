@@ -3,7 +3,7 @@ This app displays details about NY Times most viewed articles from the past few 
 
 ## Setup
 - Run `git clone https://github.com/lukekivi/NYTimesMostViewedArticles.git` or just download zip from git.
-- Install onto your device
+- Install onto your device.
 - Run.
 
 ## New York Times Most Viewed Articles API
@@ -48,7 +48,7 @@ The queried article data includes media. This app is only concerned with exposin
 ## Future Changes
 - The "No network connection" notification should be an animated overlay rather than a new row that pushes content down.
 - In MainScreenCoreContent() each non-success state builds its own column. This should be simplified.  
-- Persist basic UI data through process death via SavedStateHandle   
+- Persist basic UI data through process death via SavedStateHandle.
 - Add a period selector.
 - If the API supplied more articles allowing the user to sort based on clicking the article detail bubbles would be cool. With 15 articles it would be mostly useless.
 - Animate differences upon filtering the row data.
