@@ -46,6 +46,7 @@ The queried article data includes media. This app is only concerned with exposin
 - In the future it is important to implement some UI tests.
 
 ## Future Changes
+- The "No network connection" notification should be an animated overlay rather than a new row that pushes content down.
 - In MainScreenCoreContent() each non-success state builds its own column. This should be simplified.  
 - Persist basic UI data through process death via SavedStateHandle   
 - Add a period selector.
